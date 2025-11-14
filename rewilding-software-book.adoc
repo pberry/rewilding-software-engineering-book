@@ -1,0 +1,23 @@
+= Rewilding Software Engineering
+Tudor Girba and Simon Wardley
+2025-02-06
+:updated: 2025-05-22
+:front-cover-image: image:cover.png[Front Cover,1050,1600]
+:doctype: book
+:producer: Asciidoctor
+:copyright: CC-BY-SA 4.0
+:lang: en-GB
+:creator: {author}
+:ascii-ids:
+:showcomments:
+ifndef::imagesdir[:imagesdir: images]
+:toc:
+
+ifndef::ebook-format[:leveloffset: 1]
+
+
+include::chapter-1-introduction.adoc[]
+include::chapter-2-how-we-make-decisions.adoc[]
+include::chapter-3-questions-and-answers.adoc[]
+include::chapter-4-flexing-those-thinking-muscles.adoc[]
+include::chapter-5-different-folks-for-different-strokes.adoc[]

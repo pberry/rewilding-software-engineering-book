@@ -1,0 +1,6 @@
+output/*
+.DS_Store
+*.epub
+*.html
+*.mobi
+*.pdf

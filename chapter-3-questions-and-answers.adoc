@@ -1,0 +1,191 @@
+= Chapter 3: Questions and answers
+
+In chapter two we discuss how we make decisions and introduce the idea of moldable development with an emphasis on legacy environments. We provide an example that we encountered in practice. The problem was large, costly and visible all the way to management. At the end of the chapter, we ask about the role of questions and answers. In this chapter we explore it in more detail. +
+
+To begin with, we’re going to make a bold statement. Moldable Development is applicable equally to any software engineering problem. This is not just about legacy environments but everything we do. To understand why, we’re going to discuss the nature, characteristics and finally the role of questions and answers with our example of a data pipeline. +
+
+== On their nature
+
+Let’s start from the Wardley Map we construct in the previous chapter, only this time we highlight the tight decision making loop in figure 8. We have a hypothesis on how something works, we explore the space through conversations with the system and people via the tools we have, we assess the situation and if we have confidence we make a decision or decide that we need to refine the hypothesis. +
+
+.Adjusted high level architectural diagram.
+[#img-fig8-adjusted-high-level]
+[caption="Figure 8: "]
+image::3-8_chJpRleGjZ0W4gdv.png[Figure 8: Adjusted high level architectural diagram.,align=center]
+
+Unfolding that loop leads to the scientific method, as shown in Figure 9. Being a loop we can start from anywhere. Often, when applying the scientific method in an empirical situation, the start is an observation that results from exploration. In other cases, the start is an explicit hypothesis. Regardless of where we start, the loop typically follows the steps from Figure 9. +
+
+.High level loop of decision making.
+[img-fig9-loop]
+[caption="Figure 9: "]
+image::3-9_7iMzqfqdLvvjWy1u.png[Figure 9: High level loop of decision making.,align=center]
+
+Our ability to make decisions is governed by the speed at which we move around the loop i.e. the flow of decision making. This has two major components, the time to ask a question (ttQ) and the time to answer (ttA) a question, as depictured in Figure 10. +
+
+.the flow of decision making.
+[img-fig10-flow]
+[caption="Figure 10: "]
+image::3-10_al6pCvStr8nZVzlc.png[Figure 10: the flow of decision making.,align=center]
+
+One of the more surprising things about modern knowledge management and information theory is we never seem to record, evaluate or even ask the question of how long it takes us to ask and answer questions. At best, we examine our time to action i.e. to fix something or to make a decision. In the world of DORA, for example, we record, evaluate and ask about Time To Recover (TTR), Change Lead Time (CLT) and Deployment Frequency (DF) but at no point do we ever consider how long it takes us to formulate a hypothesis (as to what is going wrong with the system) and answer it. We examine the action and not the components that make the action. +
+
+The conceit behind moldable development is that systems are highly contextual. What that means is that we often do not have the most appropriate analysis tool at hand for a specific problem. In that situation, the default choice is to perform the analysis manually as discussed in the previous chapter. +
+
+The moldable development alternative is to stop and to mold or synthesize a tool with which we carry the analysis. The purpose is to speed up this loop and our time to answer questions. Of course, this implies that the synthetization cost plus the cost of using the tool and the speed gained must be more attractive than the manual alternative. The common practice today speaks against this idea as “tools are hard and expensive”. In the previous chapter we show that it is not the case. But our claim goes further than that example: creating micro tools works for every problem for which a specific tool does not yet exist, regardless of granularity. +
+
+As surprising as this may sound, it is not without precedent. For example, a few decades ago, regression testing was predominantly done manually, while today it is commonplace to automate much of the testing through small custom built scripts created specifically for different functional aspects of the system in an accumulating suite of test scripts. If a vendor tried to sell you a test suite that would work for your application and everyone else’s then you’d probably laugh at them. However, that’s exactly what we do with other tools. For example, static analyses, such as lint rules, are often downloaded from the web and used mostly “as is” in different systems. At the same time, it is not uncommon to have situations in which people have thousands of static analysis warnings, while all tests are green. It’s not because they do not care about the warnings, it’s that the warnings literally address someone else’s problems. The very act of creating a test within the context of a system encodes contextual value that is lacking when the check was created generically. +
+
+Another example of synthetization of tools can be seen in the space of observability, which advocates for the evaluation of the behavior of a system through custom signals that are system specific. +
+
+We’ve added this tool synthetization to our diagram (see figure 11.)
+
+.moldable development and the flow of decision making.
+[img-fig11-modable-development]
+[caption="Figure 11: "]
+image::3-11_8XeVE7zFGN9rs01n.png[Figure 11: moldable development and the flow of decision making.,align=center]
+
+While testing and observability are important, they focus primarily on the functional aspects of a system. The idea of creating micro tools applies to any other aspect of a system, including static checks, algorithm visualizations, architecture diagrams, performance evaluation, or configuration browsers. +
+
+The same Moldable Development cycle can also be visualised on our Wardley Map as seen in Figure 12, in which we linked hypotheses to Moldable Development and the synthesization of composable micro tools. +
+
+.moldable development and the flow of decision making on the map.
+[img-fig12-map]
+[caption="Figure 12: "]
+image::3-12_ryCfFPygdEErHRdc.png[Figure 12: moldable development and the flow of decision making on the map.,align=center]
+
+Given that our map and our flow diagram are equivalent, we can now import the concepts of ttA (time to answer) and ttQ (time to question) onto our map. To do so, we have to realise that the blue part of the map represents the technical details, how we extract information and how we answer questions. Whereas the red part denotes how we use information for value creation, i.e. the more business end of the system. In the red area, what matters most is paradoxically not the answer (something we use) but whether we’ve asked the right question. Finding the right question often involves asking many questions. Hence ttQ (time to question) governs. +
+
+So, the top of the map is about questions, the bottom of the map is about answers as shown in figure 13. +
+
+.moldable development and the flow of decision making on the map.
+[img-fig12-map2]
+[caption="Figure 13: "]
+image::3-13_5YOU8cSWb9JUn4hwcfN5NA.png[Figure 13: moldable development and the flow of decision making on the map.,align=center]
+
+When we say that developers spend most of their time on manual inspection, it becomes obvious that the ttA is large and the energy of the organisation is going into finding answers. If all our energy is going into finding answers, then we probably can only answer a few questions and the process of decision making becomes one of striking it lucky. By taking a moldable approach, we reduce the energy cost involved in finding answers enabling us to invest more of our energy into finding questions to ask. It improves our odds of finding that right question. We essentially make it far more likely for us to strike it lucky i.e. rather than one or two hail Mary passes, with the same energy we get to try hundreds of times. +
+
+It may not be obvious, but the process described here involves dedicated skills. We say skills in plural because the skill needed to answer questions is not the same as the skill needed to ask questions. The process also requires appropriate technology to make the creation of tools inexpensive. We address both of these in detail in the later chapters. For now, let’s assume that it is possible to create those tools fast enough and that the skills are internalizable. +
+
+That still leaves us a problem which was demonstrated by a group of school children. When a small experiment was done in the form of a game to test the speed of asking and answering questions, one of the children quickly realised they could always win the game by shouting out “42” as the answer to every question because the game only cared about the time to answer and not whether the answer was right. This leads us to a new question, what are the characteristics of questions and answers? +
+
+== On their characteristics
+
+An answer has to be the right answer or, more appropriately, an “exact enough” answer for the context. For example, when wanting to know the amount of paint to use for marking the center circle of a football field, a fast and accurate enough answer to “What is Pi” could be 22/7. That answer is accurate enough for the purpose, given that the exact answer for Pi is an infinitely long sequence of numbers that will never be completed. In other contexts, such as rocket trajectory, you might need Pi to 15 decimal places. +
+
+Accuracy is one characteristic that an answer must have. There are others. In 1854, during a cholera epidemic in London Soho, Dr. John Snow convinced the authorities to close down a well as a means to stop the epidemic. At the time, the common consensus was that cholera was spread via airborne transmission, but Dr. Snow convinced them of a different hypothesis and that intervention did have the expected result. How did he do it? Through elegantly explained evidence including a map of where the deaths occurred in Soho and a detailed analysis of the water sources used by both those that died and those that survived. That explanation convinced people of a new possibility of understanding cholera and prompted them to take action upon this. +
+
+An answer has to therefore be accurate and explainable. It also has to be representative to what is being discussed. For example, Alice presents an architectural diagram that Bill has created for a system. The architectural diagram might be an accurate representation of what Bill believes, it is explainable in the sense that Bill created it but it might not actually represent the system being discussed. +
+
+So, if an answer has to be accurate, explainable and representative then what should we expect from a question? The first thing we need is hidden in that famous question “If a tree falls in a forest and no one is around to hear it, does it make a sound?” Even if we answer the question, given that the tree cannot be observed (no-one is around to hear it) then no action can be taken. It is an unobservable phenomenon and the answer is merely a curiosity. If we intend to make a decision then the first thing a question must be is actionable i.e. It has to be something that once answered, a decision or action can be taken on. If a question doesn’t result in some form of choice and is merely a curiosity then it has no role in decision making. +
+
+For the next characteristic we return to Dr Snow. In 1849, five years before the cholera epidemic, he wrote: “Having rejected effluvia and the poisoning of the blood in the first instance, and being led to the conclusion that the disease is communicated by something that acts directly on the alimentary canal, the excretions of the sick at once suggest themselves as containing some material which, being accidentally swallowed, might attach itself to the mucous membrane of the small intestines, and there multiply itself by the appropriation of surrounding matter, in virtue of molecular changes going on within it, or capable of going on, as soon as it is placed in congenial circumstances”. Dr. Snow had formulated a specific hypothesis after years of exploration into disease. The outbreak offered the testing ground for this hypothesis. +
+
+This teaches us that any question or hypothesis has to be meaningfully specific to the domain we are investigating. The number of leeches available to treat blood poisoning is not relevant to the management of cholera. The number of smarties in a tube is an interesting question but not relevant to nuclear power safety. +
+
+Along with being actionable and specific, a question also needs to be timely. The answer to the question “How do I travel from the Reform Club, London to Suez, Egypt” varies with time. In 1872, it involved a train to Dover, cross channel ferry to Calais, train to Paris, another train to Turin, a further train to Brindisi and finally a steamer across the Mediterranean sea. Today, it would be a direct flight from London Heathrow. There is little point to asking a question if the answer is going to take so long that the underlying environment will have changed. +
+
+For decision making, an answer has to be accurate, explainable and representative and a question has to be actionable, specific and timely. We’ve added this to figure 14. +
+
+.on the characteristics of questions and answers.
+[img-fig14-characteristics]
+[caption="Figure 14: "]
+image::3-14_2uvRck5JTv7B1hOxTYAkUA.png[Figure 14: on the characteristics of questions and answers.,align=center]
+
+Now that we understand the nature and characteristics of questions and answers, we need to move to an example in order to determine their roles. For this, we will return to our data pipeline case study covered in the previous chapter. +
+
+== Example: Mapping out the problem space of the data pipeline
+
+In true physics fashion, we teach you classical physics and then as you progress to a university degree we tell you “oops, my bad” because physics doesn’t quite work that way. In the previous chapter we said our first question was “What does the system look like?” +
+
+We lied. +
+
+In fact, it was “Why are our services slow?”. This was then refined to “Is there useless data generated?” and then further into “How is the data traversing the pipeline?” +
+
+Whilst the first question was what the client wanted to know, the latter question was akin to “What does the system look like?” Let’s depict these succession of questions in another Wardley Map (figure 15). The blue “?” represents answers we do not know or have any information for. The red texts are the questions. +
+
+.Data pipeline: initial questions.
+[img-fig15-pipeline-initial-questions]
+[caption="Figure 15: "]
+image::3-15_CDeYuw8pPzbuii6r.png[Figure 15: Data pipeline: initial questions.,align=center]
+
+The answer to that latter question was given by the client in figure 3 — the erroneous network diagram with the missing external component. As no model of the network existed, the diagram was created by hand and based on crude beliefs. However, a network diagram should be derivable from the traffic which flows across the network. For all its faults, the network diagram led to a question of “How is one attribute traversing the data pipeline?” as shown in figure 16. +
+
+.Data pipeline: Answers leading to more Questions.
+[img-fig16-pipeline-answers-more-questions]
+[caption="Figure 16: "]
+image::3-16_FZTqHBeBBZCwxT8p.png[Figure 16: Data pipeline: Answers leading to more Questions.,align=center]
+
+In order to answer that the client was forced to use highly manual processes taking person-weeks for a single variable in a system which had tens of thousands. This was the first question for which a tool was built, to visualise the flow of an attribute across the network but to repeat this process tens of thousands of times. The output was a highly modelled and automated visualisation of flow, essentially transforming the answer into a commodity as depicted in figure 17. +
+
+.Data pipeline:Moving from manual to a highly modelled and automated response.
+[img-fig17-manual-to-modelled]
+[caption="Figure 17: "]
+image::3-17_HRXzz9hsjcaooKiC.png[Figure 17: Data pipeline: Moving from manual to a highly modelled and automated response.,align=center]
+
+The moving of an answer from left to right on the map through the creation of a small tool to turn a manual process into a modelled, automated and highly industrialised one, captures the key dynamic of Moldable Development. Once an answer is commoditized, it confers new opportunities to answer further questions along with industrialising higher order answers. In our case, we could use the answer to construct the answer to the higher level question of “how is data traversing the pipeline?” — as in figure 18. +
+
+This pattern can be repeated all the way up our chain of questions and answers until we reach an automated way of generating the answer to the top question: “Why are our services slow?”. +
+
+.Industrialising one answer enables industrialisation of higher order answers.
+[img-fig18-answer-enable-questions]
+[caption="Figure 18: "]
+image::3-18_QCtB36gwlnLdvkve.png[Figure 18: Industrialising one answer enables industrialisation of higher order answers.,align=center]
+
+In practice, what happens is the industrialisation of answers enables new questions that we had not previously thought of. A similar effect can be seen in modern research lab automation. For example, once we had a complete overview of the pipeline, the team wanted to refine their question. It turned out that the pipeline supported multiple marketing campaigns, but some of those were less important or even not active anymore. So, instead of looking at the entire data space, they wanted to narrow it down to only the last major campaign. This led to a new question of “What data is used only in a specific campaign?” as in figure 19. +
+
+.Uncovering new questions (the adjacent unexplored).
+[img-fig19-new-questions]
+[caption="Figure 19: "]
+image::3-19-8cyad2JQl7oVy9KU.png[Figure 19: Uncovering new questions (the adjacent unexplored).,align=center]
+
+These new questions exist in an adjacent part of the map which was not previously explored. They are described as the adjacent unexplored. Many scientific discoveries have come from adjacent questions to that which was originally being explored. For example the discovery of penicillin stemmed from an experiment with an unexpected variation, and once Flemming saw the result he formulated a new observation that led to a new question and eventually to a new discovery. Of course, not all systems will lead to major scientific discoveries but the principle is the same and the faster we can explore the adjacent unexplored, the more likely it becomes that we will discover something useful. +
+
+It is worth noting that the new question is far more specific to the problem space. For example, “How is data traversing the pipeline?” can be asked of any system involving a pipeline, but “What data is used in a specific campaign?” only makes sense within a much smaller subset of systems. In general, the value of a question goes hand in hand with its specificity. This phenomenon is caused by increasing situational awareness of the problem space itself and is typically also seen in mapping where early maps will start with generic components and concepts but later on they become much more specific. James Joyce’s quote “In the particular is contained the universal” captures the idea that specificity in storytelling is paradoxically more relatable and universal than generic narratives. It suggests that while people may instinctively lean towards broad, generalised storytelling in an attempt to be widely understood, it is actually the precise, vivid details that resonate most deeply with audiences. Unfortunately, most people aren’t trained on specificity or even understand that it is a skill that must be trained. +
+
+== On the role of questions and answers
+
+At this point, it’s worth making a few observations. +
+
+Any problem can be broken down into a chain of questions and answers. Almost always, when starting with a new problem, we know some of the questions to ask but the problem space (the map) has not been determined. As a point of interest, the maps are normally far more branching than the examples given. +
+
+The faster we industrialize answers, the faster we get to industrialize higher order answers and create new questions. ttA is critical throughout and is a major constraint on our process of discovery. Though it’s not something that most organizations ever measure or attempt to. +
+
+In a chain of question and answers, many of the component questions we seek answers for are the same component questions that others need answers for. By focusing on small tools for specific questions, we can build up a library of tools to help us find answers. For example, our data pipeline investigation used existing tools for parsing and browsing JSON and XML files, and even an engine for defining dedicated parsers — such as for the internal DSL — and visualizing their output. If a toolkit is used, then once a tool is built to answer a question, it can be pre-built into the toolkit for further reuse. While reuse is great, the goal should be to amortize the cost of creating a custom tool on the first use. +
+
+The chain of questions and answers operates both ways: going top to bottom is seeking a more detailed answer; going bottom to top enables higher order questions. Often, when people first learn about Moldable Development, they tend to think that they need a special problem to start from. But Moldable Development can be used for all sorts of problems, if not every problem. Hence, you can start with it anywhere and you don’t need to use the approach across the entire system. It’s not unlike testing. It’s possible to do some tests for some part of the system, but that does not force you to do continuous and systematic testing for the entire system. Of course, testing across the entire system compounds the value of testing and hence we tend to do this. The same is true with Moldable Development. +
+
+In a fully adopted environment, we can address dozens of questions per developer per day. Perhaps surprisingly, we quickly learn that the technical part of building tools can be learnt rather easily and the bottleneck is asking questions i.e. ttA becomes so fast that ttQ becomes the constraint. In order to manage this constraint we need to introduce a new set of techniques that we discuss in a later chapter. +
+
+So, what is the role of questions and answers? Ultimately their role is to help us map out a problem space as per figure 18 until we have a good enough understanding (given any constraints such as time, money and resources) to make a decision on it. Moldable Development is an approach to speed up the flow between question and answers (i.e. ttA and ttQ) and hence enable us to explore a problem space more quickly. In the next chapter we get to flex those knowledge muscles more. +
+
+== What did we learn?
+
+Decision-making should follow a scientific method-like loop, involving hypothesis formation, exploration, assessment, and refinement. The speed of this loop is crucial for effective decision-making, yet traditional metrics often overlook the time taken to formulate and answer questions. Answers should be accurate, explainable, and representative, while questions need to be actionable, specific, and timely. These characteristics ensure that the decision-making process is both efficient and effective. +
+
+Moldable Development is a method for decision-making and is applicable to all software engineering problems, not just legacy environments. It focuses on improving the decision-making process by reducing the time to ask questions (ttQ) and time to answer (ttA). The core of this is the synthesis of micro tools tailored to specific problems. This approach can be more efficient than manual analysis, provided the tool creation cost is offset by the speed gained in analysis. This speeds up the process of finding answers, and more importantly, it allows for the exploration of new, previously unconsidered questions — the adjacent unexplored –- facilitating a more comprehensive mapping of the problem space. +
+
+== Homework exercise: exploring a decision flow
+
+Your task is to apply the process of questions and answers: +
+
+[loweralpha]
+. Choose a software system you’re familiar with e.g., a project you work on or use frequently. 
+. Identify a question about the system. This question can be generic and applicable to many other systems e.g. “Why is this system slow?”
+. Create a map similar to Figure 15 in the chapter, showing:
+[lowerroman]
+.. The initial high-level question in red and the answer in blue. Use “?” symbols for unknown answers.
+.. Add at least three follow-up questions that you believe might help provide the answer you’re seeking in the first place. Try to make these questions ever more specific. Write the questions in red onto the map.
+.. Add blue “?” symbols for unknown answers to those questions unless the answer is known. If it is known then position it on the horizontal axis based on how the answer was obtained: if it was manually created by inspecting only some parts of the system, position it to the left; if it was generated out of the system, position it to the right.
+. For one of the lower-level answers that you positioned on the left, describe:
+[lowerroman]
+.. The current manual process of creating the answer.
+.. A potential tool or automation that could be created to answer it more efficiently.
+. Explain how the creation of this tool might enable answering higher-level questions or generate new questions you hadn’t considered before.
+. Reflect on the exercise by answering these questions:
+[lowerroman]
+.. How did breaking down the problem into smaller questions help you understand the system better?
+.. What challenges did you face in identifying specific, actionable, and timely questions?
+.. How might the creation of small, focused tools improve the time to Answer (ttA) for your chosen system?
+
+Remember to consider the characteristics of good questions (actionable, specific, timely) and good answers (accurate, explainable, representative) as discussed in the chapter.
+

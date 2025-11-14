@@ -1,0 +1,13 @@
+[#publication-note]
+= Publication Note
+
+This project was inspired by Andrew Harmel-Law's work on turning the Wardley Map blog posts into a book (see https://github.com/andrewharmellaw/wardley-maps-book[github])
+
+The contents of this book are entirely the work of Tudor Girba and Simon Wardley (with a few minor spelling corrections made by myself).  They have been collated from their Medium.com posts on http://medium.com/feenk[feenk]. Unsurprisingly, this means that the contents of this book as licenced under the same terms as the blog posts themselves - the https://creativecommons.org/licenses/by-sa/4.0/[Creative Commons Attribution-ShareAlike-4.0-International licence].  
+
+The book has been created using https://asciidoctor.org[AsciiDoctor].  The source for the book is available on https://github.com/andrewharmellaw/wardley-maps-book[github].  If you spot any corrections that need to be made, please head over there and log an issue or submit a pull request.
+
+I hope this collected version of the book is useful to you as it was to me.  Enjoy!
+
+https://github.com/pberry[Patrick Berry], Friday 14th November, 2025
+

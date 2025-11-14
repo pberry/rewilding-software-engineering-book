@@ -1,0 +1,346 @@
+= Chapter 5: Different folks for different strokes
+
+== An apology
+
+This book is about software engineering, but we start this chapter by talking to the business. We know that you’ve been wanting to fire those pedantic, inflexible, costly and annoying software engineers for ages. AI appears to be so damn helpful and so much more of a partner that you think that now is the right time to part ways. But give them a second chance, you will need them, software engineers can change and so can you. +
+
+We understand that in business you don’t care about the decisions made in code but you do care about how it works. Software engineers also care about how the systems work, but they care more about the decisions made in code. We can bridge this gap and bring you both together. We’ve done it before. We need to start by sitting down for a chat, somewhere comfortable, somewhere cozy. +
+
+== The Cozy Corner
+
+Until now we talked more about technical problems, like finding unnecessary data in a pipeline, debugging a stuck cursor, or explaining an algorithm. Those are problems which concern software engineers, and are far from your business language. So, let us talk about the restaurant business for a change. +
+
+During 2017, Tudor (as Simon was off elsewhere) had the privilege of observing how restaurants function and aim to produce value. Our observations were qualitative rather than quantitative and stem from personal experience mostly coming from eating at restaurants throughout the world. We have seen polite waiters, rushing bill boys, and bossy Oberkellners. We have seen food being served impeccably, and we have experienced the frustration of waiting for the bill. +
+
+From this journey, we came to believe that the core of the restaurant business was not yet digitized by anyone. There exists automation in different parts of the domain, but not at its core and not in general. But, what is that core? +
+
+From a consumer point of view, the value of a venue, being small or large, comes from two components: from the products it sells and from the experience it offers. From the business viewpoint, the value also depends on the costs with which the services are provided. To be complete, any optimization through automation must focus on all these dimensions in a uniform way. +
+
+A quick scan of the trade magazines shows there isn’t a shortage of systems trying to automate the restaurant business. Unfortunately, whilst they address some restaurant problems (the ones they were designed for), the restaurant business is highly variable. Hence, most of these systems either fail or try to force the restaurants to change their practice. There is no standard system that fits every restaurant. That was the challenge to address. +
+
+Our first clue was in the inconsistency of service found in busy restaurants when waiters become overloaded with demands. The problem to solve at the core of a restaurant seemed to be communication. It’s why a waiter sometimes comes over and asks whether you’ve got your order. +
+
+So how do you fix this? We need to start thinking about how messages are sent throughout the restaurant. Take Cozy Corner, a small restaurant with two tables served by a waiter and a kitchen with the cook. At its simplest we want the waiter to communicate with the chef, which they could do by talking to them. However, what happens if there is more than one waiter, maybe there’s two or three or six? Do we need a queue of waiters lining up patiently for the chef? And what happens when the chef needs to tell the waiter the food is finished? What if there is more than one chef? Maybe there are chefs that specialise in different dishes? Pretty quickly communication becomes messy. +
+
+We often try to solve this problem by introducing elements of queuing with paper notes. The famous carousel or ticket wheel. However, this is a carousel for creating food, but what about delivery and paying? The ticket wheel itself can often become a bottleneck in communication. So, the solution is to turn the ticket wheel into a digital solution and we’re done? Easy! +
+
+Think again, we’re back to the problem we started with — yes, you can automate some parts but the restaurant business is highly variable and contextual; so, the solution in one place doesn’t work in another. Since we're talking about communication, the alternative is to build a language that enables an owner to describe their restaurant. That sounds a bit crazy but let us show you how in figure 35. +
+
+.Communication flow in the Cozy restaurant.
+[#img-fig35-cozy-communication-flow]
+[caption="Figure 35: "]
+image::5-35_p88BlMW7k95UnTgB.png[Figure 35: Communication flow in the Cozy restaurant,align=center]
+
+The guests have a wish — from I'd like to order drinks, can I buy a macaroni cheese or please can I settle my bill. The waiter transforms that wish into a message which is passed to the table. The table passes the message to the room. The room (there could be many) annotates this and passes it onto the business. The business interprets the message and potentially creates another one that is addressed to the kitchen. The chef gets an item on the to-do list. +
+
+The chef now cooks our sumptuous meal. When ready, they pass a message to the kitchen, the kitchen tells the business, the business tells the right room, the room tells the table and the table tells the waiter to deliver the food. +
+
+Through this mechanism the waiter and the cook can communicate without knowing of each other’s existence, and it can scale to arbitrary sizes and restaurant-specific processes i.e. we can describe any restaurant with this language. That’s the good news, the bad news is it’s just a theory. We would actually need to build a language on how to pass these messages. This is exactly what we did in 2017. +
+
+The idea is far from trivial. We sketched pictures like the one above to reason about our idea for an algorithm of propagating messages. These pictures offer a common ground for both technical and non-technical people to discuss the space. One thing which we should note here, because we return to it later, is the difference between where the work is done and where we learn, express and discuss ideas. +
+
+This sounds a bit counterintuitive but it's one of those hidden in plain sight engineering practices. Walk into any engineering department and you'll find the same problems being discussed in two different mediums. In software engineering those are the screen (where coding is done) and the whiteboard (where ideas are expressed). It's the same with financial engineering groups — plenty of spreadsheets (where the work is done) and whiteboards (where ideas are expressed). +
+
+Domain Driven Design or DDD proposes the use of a ubiquitous language to bridge these two mediums. Here, the "domain" is the real-world problem that the software is trying to solve. If you're building software for a bakery, the domain is baking and running a bakery. If you're working on an app for doctors, the domain is medicine and healthcare. In our case, it's the restaurant. +
+
+Instead of starting with tech stuff, we talk to the people who actually do the work — the bakers, the doctors, the waiters — using diagrams to understand how they think, how they talk, and what they actually do. We don't try to solve the problem but instead we model the space like a baker would with orders, ingredients, ovens and timers and then use this to design our language. This is how DDD is practiced today — taking the hand drawn diagrams and transforming them into readable code. Perhaps like this one: +
+
+[source,ruby]
+----
+//Construct the restaurant and the staff
+cozyCorner := Venue new name: 'Cozy Corner'.
+kitchen := Area new name: 'Kitchen'; parentArea: cozyCorner.
+room := Area new name: 'Room'; parentArea: cozyCorner.
+table1 := Area new name: 'Table 1'; parentArea: room.
+table2 := Area new name: 'Table 2'; parentArea: room.
+johnWaiter := Contributor new
+                 name: 'John Waiter';
+                 addArea: table1; addArea: table2.
+jeffCook := Contributor new name: 'Jeff Cook'; addArea: kitchen.
+
+//Setup logic for the parts (not shown here)
+…
+
+//Order some food
+sirloinSteak := Consumable new
+                  name: 'Sirloin steak';
+                  price: ((30 EUR asPrice discountedBy: 10 percent)
+                          discountedBy: 5 EUR).
+sirloinSteakMenuItem := MenuItem new consumable: sirloinSteak.
+order := Order new
+           addOrderItem: (OrderItem new menuItem: sirloinSteakMenuItem).
+orderMessage := OrderMessage new order: order.
+johnWaiter send: orderMessage to: table1.
+----
+Please take a moment to read the code even if you are not too familiar with programming. It’s in enough English that you should be able to get a gist of what is happening. Indeed, if you read the code above and squint hard enough, you can imagine the picture from the whiteboard. +
+
+In our case, this description is written in an internal domain specific language which is just a fancy way of saying an object specific model designed for that domain. It’s worth understanding that traditionally, variation in systems is often supported with configurations, each variant being treated as though it was an independent problem. This sort of solution becomes harder over time because the configuration combinations explode. The alternative is to find a language in which a set of variations can be expressed with simpler mechanics. In our case, this internal domain specific language not only describes the object model and variations but goes deeper into describing the logical setup of operators. +
+
+We have to go a little deeper here but bear with us. Let us look again at the code above. The code starts by creating and linking a few entities like the cozyCorner or jeffCook. These are of the same kind but with slight variations. We called them actors. Actors know how to send and react to messages. How they do those operations is defined in the logic part that we did not show above. So, let's remedy that. The cozyCorner defines how it handles the OrderMessage something like this: +
+
+[source,smalltalk]
+----
+//Setup logic for the parts
+cozyCorner
+ when: [ :message | message is: OrderMessage ]
+ act: [ :message :result |
+   message handlingActor addOrder: message order.
+   message orderItems do: [ :item |
+     result send: (ProduceMessage new orderItem: item) ] ].
+...
+----
+Ok, we know that’s too technical. The gist of it is that actors can define logic based on a condition and associated action, and the result of an action can be one or more messages being sent. This then provides the basis for a language with which we can program complicated flows. It’s fine to not understand the code in all its details, but this should not mean that you are excluded from the discussion. What we need is a visualization that everyone can relate to, a true ubiquitous language. Hence, the importance of our whiteboard. +
+
+We now have a logical diagram and we have code that implements the logic. However, if these visualizations remain only on the whiteboard, drawing them every time we want to test new scenarios or updating them as we gain new insights into how the model should behave then this quickly becomes a highly tedious task. What's worse is that a manually created picture represents a belief about an existing system and not the actual system. This is where we depart from DDD. We get our system to create our whiteboards for us. +
+
+Figure 36 shows a logical diagram produced automatically from the logic in the system. It captures the propagation of the order (red), the produce (blue) and the deliver (cyan) messages through the venue. How do we do this? We simply build the tool to automatically generate it out of the implemented logic. With a tool like this, the cost of recreating the whiteboard with different variations of venues now becomes close to zero. +
+
+.Visualizing the flow started by placing of an order
+[#img-fig36-order-flow-visualization]
+[caption="Figure 36: "]
+image::5-36_PxoEh6rkkHAecEh0.png[Figure 36: Visualizing the flow started by placing of an order,680,680,align=center]
+
+Let's take a moment just to think about this. Our normal way of operating is to update the whiteboard and then produce the code. However, because we now have a tool which automatically creates the whiteboard from the code, we can simply modify the code to see what it looks like and discuss the visualization with the group. This feels like it should be normal practice in any business process. This doesn’t seem to be a big ask. If one cog moves, the rest shifts too. Our visualizations should be part of the machinery — not just decorations taped to the wall or scribbled on a whiteboard. +
+
+== The importance of visualization
+
+As soon as we presented the generated diagram to the business, they immediately started to express ideas and asked for variations. Only this time, we did not start from an empty whiteboard but from a system generated reflection of itself. For example, an interesting variation is to allow for a guest (called Alice) that comes into the restaurant with a phone. Why shouldn't Alice simply connect to the table and order directly through the digital interface without involving the waiter? +
+
+The business people sketched the idea manually on the generated diagram (see the left hand side of figure 37). The code was then changed and a new visualization automatically created (see the right hand side of figure 37) to ensure it matched. The entire development process was a few minutes and most of the development energy was spent on sketching and discussing ideas. +
+
+.From a business idea to a running system
+[#img-fig37-business-idea-to-system]
+[caption="Figure 37: "]
+image::5-37_XiBXZDs4_WzH6-w-.png[Figure 37: From a business idea to a running system,700,493,align=center]
+
+We can hear you saying "Ah, but you still have to turn that visualization into a running system". No, the visualization is of the running system — that’s the point. This isn’t an exercise in how to more efficiently create whiteboard diagrams. The diagram is the running system, it’s a self representation. Once the change was in place, we could see that indeed, without changing anything in Cozy Corner, Alice could place the order and the cook was notified, when the cook said it’s ready, the waiter was notified. +
+
+As soon as the business group saw the result, that started the next conversation, the next set of ideas to be expressed: Should the waiter or the guest be notified? Well, it depends on the flow of the restaurant. And so we went on to discover an adjacent unexplored area. And so on. +
+
+This is a good time to talk briefly about the use of hand drawn diagrams. We used the one from figure 34 to communicate when there was no system. We used the left of figure 36 to depict the delta between what existed and what was wanted. Hand drawn diagrams depict either wishes (when they are about the future) or beliefs (when they are about the present). As soon as the system exists, the diagram should be generated i.e. there should be no place for beliefs, only wishes. Designing systems is hard enough. Not knowing what your current system is and relying on beliefs should not be an acceptable variable. +
+
+== This seems like magic?
+
+At first glance this can look like a BPMN (Business Process Model and Notation) or a workflow engine but this is just because we are modeling a concept that looks like that. The idea of creating contextual visualizations applies to anything in the domain we want to model. +
+
+For example, in our scenario code, the definition of the steak had a price associated with it. Like this: +
+
+[source,smalltalk]
+----
+sirloinSteak := Consumable new
+   name: 'Sirloin steak';
+   price: ((30 EUR asPrice discountedBy: 10 percent) discountedBy: 5 EUR).
+----
+That price includes a couple of discounts like the discount by 10% or the one by 5 euro. Discovering the discounting mechanism also followed the same process as the one of discovering our order flow and it also came with its own tool and visualization as seen in figure 38. The price object was not specific to the restaurant industry but to any domain with finance within it. +
+
+.Visualization depicting discounted prices
+[#img-fig38-discounted-prices]
+[caption="Figure 38: "]
+image::5-38_ssgSdMj5naeCRd3k.png[Figure 38: Visualization depicting discounted prices,align=center]
+
+Our restaurant business contained multiple languages — the language of order flow, the language of payment, the language of a specific object. When building our tool for the restaurant business, what we are in fact doing is creating a domain specific language by combining pre-existing languages with what is specific to the domain, Cozy Corner being a specific instantiation in that resulting language. +
+
+We are going to re-emphasise this part because it’s at the heart of why we can work so quickly. We don’t build solutions to a problem by writing code, we build the language of the problem. Then we use that language to solve the problem. That language is written in code and it always comes with a visualization (a tool) because building the tool is how we build the language. +
+
+The net effect of this is that we build domain specific tools for the problem and then we use those tools to solve the problem. Whilst most problems we face in technology are highly contextual — stuck cursor, cozy corner — there are a few highly recognizable and standard problems — HTTP load testing, code editing, DNS queries (see figure 39) — where ready made tools make sense and are available. Alas, we've been hoodwinked by tool vendors into believing that their tools are applicable everywhere which is unsurprising given their self interest. Kitchen blender salespeople will always sell you kitchen blenders for digging deep mine shafts if they could get away with it. +
+
+.People recognizing a software engineering problem vs the problems
+[#img-fig39-problems-recognition]
+[caption="Figure 39: "]
+image::5-39_8-Wgl57HwmKzjs9y.png[Figure 39: People recognizing a software engineering problem vs the problems,align=center]
+
+Despite tool vendor claims, for the majority of cases, to solve a problem we need to build a tool for that context. To communicate that problem, the tool needs to show a visualization of it but that requires a model. To build that model we benefit from creating the language of that highly contextual domain and in order to create that language we need to ask and answer questions. The process of asking and answering questions is captured in the development of the tool for a contextual problem. It’s also where we make our choices on what matters. +
+
+Hence, when dealing with a legacy migration project, we don’t start looking at or reading legacy code in a standard code editor, we start by building the tools to understand that legacy code and once we can effectively visualize the problem then we can migrate it. This is how you turn year-long migration efforts into a month: by spending the first three weeks building the tools you need. This isn’t magic, it’s just the result of rethinking what we mean by software engineering. Which is pretty convenient since the title of this book is “Rewilding Software Engineering”. +
+
+== A note on reason
+
+Language, medium and tools are core pillars for how we reason about the world around us. Any changes to these throughout history, such as the printing press (tool), the written word (language) and paper (medium), had profound effects on how we reason. +
+
+.Pillars of reasoning
+[#img-fig40-pillars-of-reasoning]
+[caption="Figure 40: "]
+image::5-40_XDctKwzMOnOAafp_.png[Figure 40: Pillars of reasoning,align=center]
+
+In the world of software engineering: the language, medium and tools have evolved over time leading to changes in how we reason both about and with the machine. For example, the language change from Fortran-like expression to message passing and protocols enabled us to create orders of magnitude larger systems. Today, languages are changing from exclusively deterministic to include non-deterministic forms such as prompts with LLMs. +
+
+The change of the medium through which we interact with the machine from text to GUI (graphical user interface) also changed how people adopted computation in their lives. Today, our medium is changing as well. In a traditional world of engineering we would often discuss the problem on a whiteboard and then translate this discussion to deterministic code (written text). The written text was the major medium of human to machine interaction. In a world of LLMs/LMMs then, the whiteboard (a mix of images and text) becomes a major medium of human to machine interaction, in which, the LLMs/LMMs often do the translation to deterministic code. +
+
+But, more than just inputs, the ability to visualize problem spaces is a critical part of the medium. This is not just in creating new business processes for the Cozy Corner but in how we understand problems. To give an example of why visualization matters and why it works, let us look at four constellations of ten small nodes like in figure 41. How many groups do you see in each constellation? +
+
+.Visual grouping of ten nodes
+[#img-fig41-visual-grouping]
+[caption="Figure 41: "]
+image::5-41_VFsWTibbJJeMZiPX.png[Figure 41: Visual grouping of ten nodes,align=center]
+
+The answer to the question of "how many groups" depends upon what visualization is used. In the proximity configuration, you’d probably say three or possibly four — the only point of challenge being the node in the very center. In the enclosure, you’d probably say “two groups”. In the similarity or connectivity views then you’d probably say three. These pictures work because of our innate visual abilities. Visualization can be a powerful medium when leveraged appropriately. +
+
+Medium and language are changing. But what about tools? In our environment, the existing tool vendors are trying to persuade us that the tools of the future are the same tools they have sold us in the past plus added ChatGPT or equivalent. These future tools are commonly called copilots. Yes, they will add language elements (such as prompts) and will no doubt add medium elements (such as whiteboards). In 2025, it is clear that a copilot with a “build from a whiteboard” capability is just around the corner and an obvious (and somewhat tedious) change. +
+
+What this book argues is that we should use this opportunity to fundamentally change our tools as well and for those tools to become more contextual i.e. built to the problem. This might not be a popular message with tool vendors, but we have been sold a pig in a poke — we should have been using contextual tools all along. Now is the right time to change this. +
+
+These three concepts — of language, of medium, of tools — play off one another in Moldable Development. The practice of Moldable Development supports the creation of domain specific languages (as in the Cozy Corner example) for the problems you are looking at. Those languages may contain both deterministic and non deterministic forms but they are created through the process of building small contextual tools that can be combined in many ways. Those tools provide a highly visual medium for communication. By touching upon language, medium and tools then Moldable Development is in effect a way of reasoning about the world around us. +
+
+== Shallow and deep (mining) problems
+
+Ok, this has nothing to do with mining (or kitchen blenders). This has to do with how far we are from the problem we want to reason about. +
+
+To give an analogy, consider a stain you observe on the ceiling. You can just as well, say that it’s dirt and have it painted over. But what if the stain is a sign of a mold? Then you need to look beyond the thin paint layer and have the structure treated. But that stain can just as well be a leakage. In this case, the right solution is to go beyond the thin paint layer and the structure and look at the pipes. Limiting ourselves to observing only the outskirts of the system does not allow us to address or even understand anything but shallow problems. True understanding requires identifying root causes and that requires us to explore the system at various levels. +
+
+When the stain is just dirt, we are facing a shallow problem. When the stain is caused by the pipes, we have a deep problem on our hands. Yet, when we open the wall and get to the problematic pipes that should be replaced or patched, we are again facing a shallow problem. +
+
+Whether a problem is shallow or deep relates to the distance between the observation and the root cause. If we can peel off layers from our system and can explore them on demand, we can transform deep problems into shallow ones. A pipe leak is a relatively easy thing to fix. The hard part is knowing that the problem is a pipe leak and finding where the pipe leak is. +
+
+With the right tools even those harder problems can be broken down into more shallow problems. It's why plumbers have tools like acoustic leak detectors, electronic leak detection, pipe inspection cameras and even use thermal imaging cameras. Notice how in the physical world, for every problem, we quickly break down into a plethora of tools, each designed for a specific kind of problem. +
+
+The same can happen with a software system. In this and previous chapters we offered examples at various levels of depth. In each case, when observed from outside the system, the problem looked deep and insurmountable. But when we dug deeper, it became shallow and tractable. You can observe this phenomenon using those questions and answers maps we introduced before (see figure 42). +
+
+.Shallow and deep problems
+[#img-fig42-shallow-deep-problems]
+[caption="Figure 42: "]
+image::5-42_-Lfkmai7OduH4A8p.png[Figure 42: Shallow and deep problems,align=center]
+
+An important point to recognize here is that questions at different levels are not necessarily provided by the same person, and that they require different levels of expertise. The houseowner asking about the stain often needs the plumber to ask about the source of the leak. Similarly, the business person wanting to know why the services are slow needs the technical person to navigate the technical details (see figure 43). +
+
+.Questions, answers and expertise (the answer to life, the universe and everything)
+[#img-fig43-questions-answers-expertise]
+[caption="Figure 43: "]
+image::5-43_XUtdLJoJs5DREOiN.png[Figure 43: Questions, answers and expertise (the answer to life, the universe and everything),align=center]
+
+Those role variants — e.g., the manager, the architect or the developer — also point to who makes the decisions. Underneath the developer is the system itself and one of the interesting aspects of LLM/LMMs is the expansion of where the system makes choices for itself.
+
+== To vibe or not to vibe?
+
+Given Eric Schmidt’s and others’ recent proclamations that software engineers will no longer be needed by the end of 2025, we need to return to the question of AI or more aptly the great seduction by it. +
+
+It’s probably worth clarifying a few popular terms here. These terms will change over time as people are still exploring and defining the field of generative AI. Software engineering is the act of making decisions in code. It can and often does use an AI as an assistant in this act but inspection of the code remains firmly in control of the human. Vibe coding (or as Simon prefers to call it vibe wrangling) is an exploratory style of programming where humans and AI work conversationally without the humans looking at the code. +
+
+Yes, you can use vibe coding to create marvellous prototypes. And both authors extensively use language models to do this. In the act of writing code, the coder is making decisions of what our system should look like. It should always be remembered that anything in the system, including what people call architecture or the ubiquitous domain language, is in the code. The one writing the code is the real architect and the real modeller. +
+
+When that coder is the AI then we are handing over control, decision making and understanding to the machine and that’s ok if it is something you trust the AI to do — for example, when working on a prototype. But when doing that, you are also deciding not to develop a language for that domain, not to model that system and not to build the tools to understand that context. +
+
+The troubles occur when you start to care about the result. At this point, you have no choice but to involve yourself in decision making. This often manifests itself through a review process i.e. we get the AI to code and then we review the code. In the case of technology, that means software engineering. Despite Mr. Schmidt's claim, it is unlikely that software engineering is disappearing anytime soon. First, because building trust in AI systems is a social process. Second, because this assumes the AI systems are capable. +
+
+In addition, there is also a hidden assumption which is flawed. In early human history, we used to have scribes because literacy was not universal. The current ideas about AI have a hidden assumption that because the business has not in the past been able to be involved in software engineering that the the AI simply replaces those IT scribes rather than everyone becomes literate. It's really important to grok this, from a business perspective using LLMs or using software engineers is the same thing because in both cases the business had no visibility into the system (see figure 44). +
+
+.The view of the system from a business perspective
+[#img-fig44-business-view]
+[caption="Figure 44: "]
+image::5-44_0fPmCuXXuAD7kAxj05wg1Q.png[Figure 44: The view of the system from a business perspective,align=center]
+
+However, the Cozy Corner example shows that there is a mechanism for universal literacy through the views created from the system. These views democratize the reading of systems in a way that is decoupled from their writing. +
+
+So, why not get an AI to write the views and we use these views to discuss with the AI through prompts? That's the future we are arguing for: a human will still be able to make decisions about the system at a slightly higher layer than code review. The key here is that the human doesn't get detached from the decision making in the same way that the business became detached from the technology choices being made. This is the heart of rewilding software engineering, exposing the workings of the system in a language that is universal (in this case views) without the necessity to read code. See figure 45. +
+
+.Avoiding Black Boxes
+[#img-fig45-avoiding-black-boxes]
+[caption="Figure 45: "]
+image::5-45_l9fJzouKgeN23Xy5u_6X0Q.png[Figure 45: Avoiding Black Boxes,align=center]
+
+So, why not use AI agents to discuss with AI agents (e.g. some to code, some to read and review the code) in the pursuit of a goal set by the human? You can, and there are some very interesting practices being developed here which we will explore in a later chapter. However, you cannot avoid handing over decision making to the AIs if you cannot review the system. The use of such agents once again puts the business back into a situation of the system being a black box that it can’t understand. +
+
+The most important architectural question of today is: at what point do I value human decision making? Investors in AI and tool vendors of AI will tell you that you don’t need to care about human decision making and that AIs don’t need humans but then, they have a self interest in sizzling up that story. Hence claims that we won’t need software engineers by the end of 2025 are common amongst this group. +
+
+In general, using AI is perfectly fine if:
+
+* the system is not something you care about. This can be particularly useful for exploring new ideas about a space, much like how you could use AI to get you beyond the writer’s block in front of an empty page.
+* you are at the right level and see the right problem, you can specify what you want generated and you are also in the position to evaluate the AI’s output. Always remember that prompts are not a deterministic language and what you get back is the AI’s statistical interpretation of what you wrote, not necessarily what you were thinking.
+* you are at the right level to answer your question, but do not have a tool for answering the question, then you might be able to use AI to generate that tool or view for you.
+* you do not know where to look, you can also ask the AI for possible questions (even when they are presented as answers).
+Don’t get us wrong, the dopamine hit of getting something done with vibe coding can feel delightful, and because of this it’s easy to get carried away in the excitement. But the economic impetus to adopt AI is based on the premise that we have reached the peak of human productivity and the only way to increase that productivity is to either add more people or adopt AI which is much cheaper and abundant. But that assumption is wrong. We are far from knowing what humans are capable of in this space simply because there is no universal literacy.
+
+== Bridging the gap
+
+Shallow and deep mining, vibe or not to vibe, the different roles involved (both human and AI) and where decisions matter (both human and AI) — there is a lot of content here but at the root of all these is the skill of asking and answering questions about the context of our systems. This requires a common language between all participants hence the importance of universal literacy. +
+
+It’s worth noting there are also specific skillsets involved because these might not be obvious in the first place. Unsurprisingly, those skillsets cover the asking of questions (the stakeholder role) and the provision of answers (the facilitator role). +
+
+In our Cozy Corner example, we have multiple stakeholders, starting with the software engineer implementing the message flow algorithm that had the need to visualize it for debugging purposes, to the domain experts (or business managers) that had the need to see the flow to come up with variations at the domain level. +
+
+In the case of the data pipeline example described in previous chapters, there were multiple stakeholders as well. We had the CIO that wanted to know why the system was not improving, we had architects that wanted to know what data is and is not used throughout the pipeline, and we had the software engineers that wanted to understand the impact of individual data changes. In general, anyone with a stake in the system is a stakeholder. +
+
+The stakeholder's role is one of asking questions, posing hypotheses and of interpreting answers. Questions can have different goals, like seeking exploration, refining the landscape, understanding the space, or helping define a domain specific language, but they should always be timely, specific and actionable. Once stakeholders get answers, they should know how to transform them into action. +
+
+The provision of those answers is determined by the skill of the facilitator. While the stakeholder can be anyone, the facilitator is necessarily technical. They construct contextual tools that provide explainable, representative and accurate answers from the systems. In figure 46, we provide an overview of these roles. +
+
+.The role of facilitator and stakeholder
+[#img-fig46-facilitator-stakeholder-roles]
+[caption="Figure 46: "]
+image::5-46_HiKuVul-S6t_VA65.png[Figure 46: the role of facilitator and stakeholder,align=center]
+
+The facilitator is a support role and its function can be more clearly seen in the Q&A map. In order to explore a problem domain, the facilitator helps to industrialise answers through the production of tools to solve that problem. This enables not only new possible questions (the adjacent unexplored) but also the shift of questions from the concrete but uncodified ("how is this piece of data traversing the data pipeline") to the more abstract but codified (a tool to show how many data is traversing the data pipeline) — see figure 47. The facilitator can be viewed as being similar to a data scientist but for providing answers about systems, and not only domain data. Yes, this is a possible role for AI. +
+
+.The facilitator is focused on commoditizing the answer
+[#img-fig47-facilitator-commoditizing]
+[caption="Figure 47: "]
+image::5-47_dszx5O6BLRVGzHiE.png[Figure 47: the facilitator is focused on commoditizing the answer,align=center]
+
+The interplay between the roles can be observed at the highest conceptual levels all the way to the most granular levels of exploration. Consider, for example, the dynamic exploration of the tokenization algorithm described in the previous chapter, as seen in figure 48. The contextual tools materialize answers, but their meaning is given by the overarching questions prompting the exploration. +
+
+.Stakeholders and tools: what are the resulting tokens?
+[#img-fig48-stakeholders-tokens]
+[caption="Figure 48: "]
+image::5-48_iBnADWuEiEEqbHI0.png[Figure 48: Stakeholders and tools: what are the resulting tokens?,align=center]
+
+For example, our first question is "How does tokenization work?". This leads us to a sub question of “How does tokenization work for a given input?”. This we answer through building the first pane which contains a code snippet that executes the tokenization algorithm which in turn creates raw data. Examination of this raw data leads us to a new question of “What are the resulting tokens?” which we answer by creating a new dedicated view (the 2nd pane). Exploration of an individual token from this view, creates a third pane with raw data. This leads us to a new question of “How was a token constructed?” which we answer with a new view (the 3rd pane). +
+
+The choice of a view must be a conscious step. This can be harder than it appears when you are used to working with standard tools with constrained views that you try to fit into your question. When following Moldable Development, we start with the question and then build or pick the tool with an appropriate view that helps drive the exploration of that question. +
+
+This can, and does, create multiple paths for exploration. For example, in the scenario above having created the output for the snippet in pane 1 then we could go down a different path. Instead of exploring "What are resulting tokens?", we could explore "What steps did the algorithm take?" leading up to the question of "What happened at each step?" (see figure 49). Navigating these pathways is a skill that the stakeholder must learn. +
+
+.Stakeholders and tools: what steps did the algorithm take?
+[#img-fig49-stakeholders-algorithm-steps]
+[caption="Figure 49: "]
+image::5-49_o__AAoNcEoFE8EXe.png[Figure 49: Stakeholders and tools: what steps did the algorithm take?,align=center]
+
+== Roleplaying with AI
+
+How does AI fit into these roles? Is it a stakeholder, a facilitator or both? The answer to that question depends a lot upon context and time. For example, in today’s world, with our current systems, AI can act as a facilitator for prototypes and contextual tools. As its capabilities extend then that will change over time. Though these systems don’t reason (for now) despite sophisticated code generation, the combination of many agents can simulate such reasoning especially for shallow problems. +
+
+But, this is performative i.e. there is an appearance of competence without substantive problem solving. This can pose an issue when trying to solve deep problems. Hence, when a pattern is known or well defined or when we can quickly evaluate the output, then AI can act as a useful facilitator. +
+
+Perhaps unexpectedly, LLMs also have a role in asking questions (i.e. being a stakeholder) or at least coming up with alternative questions to ask. As time progresses, capabilities develop, practice co-evolve and trust is earned then that boundary of what we will use AI for will change. +
+
+We can summarize this all into one choice that needs to be continuously made, where does it matter to have humans involved in the decision making. The impact of LLMs is shown in figure 50 in both helping in the creation of hypotheses (a stakeholder role) and in generation of specific coding / tools (a facilitator role). +
+
+.Stakeholders and Facilitators in decision making
+[#img-fig50-stakeholders-facilitators-decision-making]
+[caption="Figure 50: "]
+image::5-50_5gUmBzTkX8MrmS0Jg7SaUg.png[Figure 50: Stakeholders and Facilitators in decision making,align=center]
+
+== The reconcilliation
+
+We started this chapter with an apology and a description of how software engineers can appear to be unhelpful, pedantic and inflexible. This is mostly caused by the exclusion of business from the decision making in the systems which in turn is mostly caused in the current practices of software engineering. This is why we are writing the book, it’s not just for software engineers, it’s also to bring the business closer. +
+
+Challenging the nature of software engineering (our first wolf in our rewilding metaphor) and the importance of this being a decision making process is as much for engineers as it is to highlight how the business should be involved. This requires us to challenge the way in which we ask and answer questions (our second wolf) and in particular the tools and visualizations we use. +
+
+That may not be comfortable for some, but both wolves are needed if we ever want to end up somewhere cozy. +
+
+== What did we learn?
+
+This chapter adds several important new concepts. +
+
+Stakeholder and Facilitator roles: there exists discrete but complementary roles with different skillsets that formalize the relationship between questions and answers. Each of those roles is focused on a different aspect and governed by their own metrics — ttA (time to Answer) and ttQ (time to Question). +
+
+Language, medium, and tools as pillars of reasoning: There exists three elements that are foundational to how we reason about software systems which is an essential part of decision making. Instead of building solutions directly, we should aim to build the language of the problem first, which includes contextual tools to visualize and manipulate that problem space. +
+
+Deep and shallow problems: visualizations are critical for transforming deep problems into shallow ones by revealing the system’s inner workings. +
+
+Vibe Coding vs. Software Engineering: AI has a role in code generation, facilitation and as an assistant to stakeholders. That role will expand over time but the boundary between human and AI decision-making is an architectural choice that should be made deliberately based on where human understanding and control are valued. +
+
+== Homework
+
+For this chapter’s homework, we need you to inspect your own organization and current practices. This is mostly an exercise in self reflection considering aspects of this chapter. +
+
+=== Step 1. Visualization audit:
+Examine your current development process. How many of your visualizations (diagrams, charts) are manually created beliefs about the system versus automatically generated reflections of the actual system? Create a plan to move at least one key visualization from manual to automatic. +
+
+=== Step 2. Data sources audit:
+Examine how you get information about your systems. How many surveys did you have in the past 3 years that were asking teams about how they use or deploy technical capabilities (such as for clouds)? Pick one of them and from one of the questions explore what it would take to get the answer through a tool rather than by asking for opinions. +
+
+=== Step 3. Role identification:
+Identify the stakeholders and facilitators for a system in your organization. Document the questions typically asked by stakeholders and how facilitators currently provide answers. Where are the gaps in this communication? Does the organization think about how we ask and answer questions or these different types of roles? As a concrete way to identify facilitators, start from Step 1 and Step 2 and ask yourself who would implement those tools. +
+
+=== Step 4. Domain language exercise:
+Choose a small but important process in your organization. Sketch a domain-specific language that would describe this process. What are the key actors, messages, and rules? How would you visualize the flow?
+

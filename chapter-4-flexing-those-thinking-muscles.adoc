@@ -1,0 +1,307 @@
+= Chapter 4: Flexing those thinking muscles
+
+== Making systems explainable
+
+In the previous chapters we introduced two important concepts. The first is that software engineering can be viewed as a decision making process. Our current processes are suboptimal, relying on beliefs and gut feel. When our mental model differs from the reality of the system, our actions will be misguided and we end up wasting a tremendous amount of energy. The way to solve this problem is to align the two. To do this, we need to look at how we inform ourselves about the system and for that, we have to look at the tools we use. In the physical world, you wouldn’t use a kitchen blender to create a deep shaft mine. In the digital world, this is precisely what we do, and this activity is highly aligned with how tool vendors tell us that building tools is hard. Well, it’s not. Challenging the nature of software engineering is our first wolf in our rewilding metaphor. +
+
+Metaphors are great, but shared experience is better. A large company (multi-billion dollar market cap) relied on robots to produce wafer technology. In turn, these robots relied on a real time distributed system. At some point, the company realized that they no longer knew how this system was working. The system was created a long time ago and became a black box for them. They gave our team at feenk one year to try to make sense of it. After a month, we had a meeting in which they asked what else we would need to get started. And we answered that we have finished and demonstrated it with a live running model of the system. That’s when they shared with us that there were bets in the company saying that we have no chance of succeeding in the allotted one year time. They assumed this because multiple past efforts over many years had been made and failed. What differed with us, is we started the project by building the tools we needed to solve the problem. This is how we succeeded and how we beat any and all expectations they had. It’s important to note here that this is not a story of 10x engineers. It is a story of a different method through which we made an opaque system explainable. +
+
+The second concept is that even if we accept that software engineering is a decision making process, we still have to think about, measure and optimize how we ask and answer questions. By decreasing the time it takes to ask and answer questions, we get to churn through more of them. The more we do that, the more likely it is to discover new value and interesting solutions. By not measuring or even asking questions about how we ask and answer questions, we deny ourselves this opportunity. Imagine a gold prospector panning for precious nuggets in a river. The traditional method of sifting through sediment is slow and laborious, allowing the prospector to process only a few pans of river mud each day. This is akin to our current approach of asking and answering questions without optimizing the process. Now, picture that same prospector inventing a more efficient sluice box system that can process ten times the amount of sediment in the same time. Not only does this increase the chances of finding gold, but it also exposes the prospector to a wider variety of minerals and geological formations they might not have encountered otherwise. +
+
+As we said, metaphors are good but shared experience is better. In finding our solution to the multi-billion dollar market cap company’s robotic problem, we spent three weeks of the total one month building dedicated inspection and debugging tools. These tools provided visibility which then allowed us to validate more hypotheses. And eventually, we ended up with a working solution. +
+
+Challenging the way in which we ask and answer questions is our second wolf in our rewilding metaphor. Both these wolves are visible in figure 20, in terms of the decision making process of what software is and what it should be, and in the separation of time to question and time to answer. +
+
+.Our two wolves
+[#img-fig20-two-wolves]
+[caption="Figure 20: "]
+image::4-20_3dJWooZDi1nyhPuZ.png[Figure 20: Our two wolves,align=center]
+
+Both these wolves are connected by a common goal: the pursuit of explainable systems.
+
+== Systems’ explainability
+
+For the longest time, ideas about quality regard the understandability of code as being a function of the code itself. If you write it in the right way, with descriptive variable names, with concise functions, with logical structure, with indentation, using the latest rituals of separating concerns and inline documentation then it would be explainable. Because explainable meant readable and that’s what we do, we read code to understand it. +
+
+This led to quality models that are made out of trees of measurements that are compared with industry accepted thresholds to identify problematic places in code. Metrics like McCabe complexity have a prominent place in this space as they are considered to denote difficult to grasp code. The same thinking also led to practices, like those behind Clean Code, which focus on the code structure and its readability as a differentiating factor. +
+
+While we agree that readability is relevant, readability is not the most effective path to understanding. What is required is to make a system explainable. This depends not only on the system itself, but also on how you extract the information from it, and how you use that information. If you attempt to make the system explainable only by focusing on the system itself, you miss the opportunities offered by the other two levers (see figure 21). +
+
+.What is needed for System Explainability
+[#img-fig21-system-explainability]
+[caption="Figure 21: "]
+image::4-21_xlKXm_V8H6pzc660.png[Figure 21: What is needed for System Explainability. The term "data" represents both code and data with the distinction between the two mostly irrelevant at least since the introduction of Lisp.,align=center]
+
+That explainability depends upon how we extract information and how we use the information can appear counter intuitive. But consider these two scenarios:
+
+* You have a problem about a system that you do not know but wish to understand. If you are only equipped with a basic text editor such as a basic notepad then you are likely to fare much worse than if you have your favorite development environment. In other words, tools make a difference. *How we extract information matters*.
+* Now consider two different engineers against the same problem: one with experience in the technology and the system, and an intern that just experienced their first assignment. The former will likely do better because they have a wider range of experiences and skills to bring to the problem and can find the root cause faster. *How we use the information matters*.
+
+The structure of the system can certainly influence explainability, but skills and tools are at least as important. Meaningful tools and meaningful skills matter. +
+
+=== Example: The stuck cursor
+
+For quite some time we had an issue in the text editor of a project known as https://gtoolkit.com/[Glamorous Toolkit]. The problem was related to the cursor getting stuck when navigating with the keyboard and the cursor was at the end of a paragraph. It was annoying, it was visible but we did not know how to address it and it stayed open for half a year. +
+
+We knew that the issue was likely due to something at the lower levels of the editor implementation, but we did not know what it could be. We did not even have a meaningful hypothesis. +
+
+While Glamorous Toolkit is primarily written in Pharo Smalltalk, it also relies on Rust plugins. The text editor is based on such a plugin, and it is essentially made out of wrappers over Rust objects. This is nice because it allows us to reuse external libraries. At the same time, to find issues visible in the high level editor, we need to understand how the low level objects work. We can’t simply treat them as black boxes. Ideally we need at least the ability to inspect from the text editor to the wrappers to the Rust objects depicting the low level details of paragraphs. Unfortunately, back in 2022, we did not have this capability. For the Smalltalk objects we had extensible inspectors, but for the Rust objects we only had a separate and standard development environment. +
+
+As the problem with the cursor seemed to be related to its positioning, we naturally investigated the various positional indexes of the Rust objects using the standard inspection tools. We looked at paragraph objects and inspected their text ranges — at which index they start and at which index they stop. That did not lead to any insight even after several people looked at it over a longer period of time. For some inexplicable reason this was a seemingly impossible problem to solve. +
+
+As we do in cases in which we do not see the problem, we stop and work towards building a tool that shows it. In this case, this meant a longer detour. We had to extend our inspectors beyond Smalltalk and into Rust. Expanding a toolset into a new language is not a minor undertaking, this detour took a couple of months of work but now we have the capability to inspect any Rust object. +
+
+Once we had this capability we could return to the problem. And the problem became obvious within seconds. The screenshot below shows the actual exploration that led to the bug resolution (see figure 22). +
+
+.Inspecting a Rust paragraph object
+[#img-fig22-inspecting-rust-paragraph]
+[caption="Figure 22: "]
+image::4-22_vdudzw5WjQYprTd9.png[Figure 22: Inspecting a Rust paragraph object,align=center]
+
+From the figure, the left hand side is the Pharo Smalltalk text paragraph object. The middle pane shows an inspector of the corresponding Rust object. This one shows a view with details, such as the line ranges. To the right, we see the positional indexes. So, how did this help see the problem? +
+
+Take a closer look at the last pane. The first line has a range between 0..30. The second line has a range of 30..64. When we saw this, we realized our mistake: in our Smalltalk implementation we assumed that the ranges were inclusive i.e. 30 is the last position on the first line, and that the next line should start at 31. But when we saw that the second line starts with 30, we realised the ranges were not inclusive. 0..30 means 0 up to but not including 30. Our cursor problem was due to a mismatch between what we believed and what the framework actually did at a low level. The fix to the year long problem that had plagued us involved changing one character of code. +
+
+This real life example shows a couple of things. First, in contrast with the case study discussed in chapter 2, the current problem was tiny and low level. Yet, to address it, we relied on the same approach as we do for all problems. The view is not fancy at all but meaningful and seeing it made both the problem and the solution obvious. The explainability of the system depends more on how you seek the explanation than on the system itself. +
+
+To better understand the dynamics behind this statement, let us look at the questions and answers behind this example. +
+
+== Questions and answers: the stuck cursor
+
+Our first question was unsurprisingly "Why is the cursor stuck at the end of the paragraph?". This question is actionable (if we know the answer we could do something about it), specific (it's not some generic question but very precise to our context) and timely. We had no answer to this question but we suspect it has something to do with the Rust objects. This gave rise to our second question "What are the wrapped Rust objects looking like". This question is a lot less specific and we had no tools for seeing the wrapped Rust object within the context of the Smalltalk object. We had to go outside of our environment and rely on generic tools for Rust in the hope of providing some sort of answer. This is shown in figure 23. +
+
+.The stuck cursor
+[#img-fig23-stuck-cursor]
+[caption="Figure 23: "]
+image::4-23_IdTSmwSWdyX9ty6Z.png[Figure 23: The stuck cursor.,align=center]
+
+By building the Rust inspector we could answer the second question with a tool within our environment that would allow us to navigate across language boundaries. Seeing the interconnected objects led us to ask the question of "Are ranges inclusive on both ends?", the answer of which also answered our original question of "Why is the cursor stuck at the end of the paragraph?" (see figure 24) +
+
+.Solving the stuck cursor
+[#img-fig24-solving-stuck-cursor]
+[caption="Figure 24: "]
+image::4-24_gyxSZD4ziMoSj5f2.png[Figure 24: Solving the stuck cursor.,align=center]
+
+We didn't answer our original question by creating answers to the things we suspected were happening. Instead, we invested in our ability to explore and our exploration led us to a new question we had not previously considered and the answer to that enabled us to solve our original question. +
+
+In our experience, this is a fairly common pattern. The answers to the questions we think we need often lead us to new questions we hadn’t thought about — the adjacent unexplored. +
+
+== Exploring the stuck cursor with LLMs & copilots
+
+But wait a second, should we not use an LLM instead to find the answer, especially for a problem of such reduced scope? Well, at the time there were no LLMs to use. Today, it would certainly be a legitimate path to consider. We will discuss the use of AI in a later chapter, but for now, let us take a brief detour and explore our stuck cursor problem with a couple of leading LLMs & copilots today. +
+
+The results of asking LLM-based chats were varied including a suggestion to search Stack Overflow for “Skia Paragraph cursor position”, “Rust text editor cursor stuck” and “Rust Skia keyboard navigation” — none of which resulted in useful articles. +
+
+We then used a copilot to digest the relevant code and when we asked “Why is the cursor stuck at the end of the paragraph?”, it provided us with several dozen possible suggestions. In our case, none of these described the range inclusion path. +
+
+But isn’t the problem just due to the wrong prompt or lack of context? Maybe a different prompt or tool could improve the situation. However, even if the range suggestion was covered, it would still be one of many that would require assessment against the system. The suggestions that come out of an LLM are in fact questions to explore disguised as answers. We still have to assess them, just as we would with suggestions or code created by a human. +
+
+But can’t we use agents and won’t they fix this assessment problem? Yep, that’s an answer. You can stop reading now. Unless we want a human to be able to make the choice in which case the human needs to be informed i.e. the answer should be explainable, representative and accurate. Choice leads us to a need to assess which leads us back to the problem of how we answer questions. +
+
+But we don’t make the choice in my self driving car, why should we care? It boils down to HITL, HOTL and HOOTL. If you can forever accept humans out of the loop (HOOTL) of decision making then by all means you can pursue the path of agents and stop reading. But be aware, you are consciously choosing to become the Eloi in HG Well’s Time Machine by letting your ability to reason about the problem atrophy and hence creating the potential for E.M. Forster’s The Machine Stops. +
+
+But aren’t machines more capable than humans? That argument assumes we have reached the pinnacle of human’s ability to make decisions about software systems. We argue that we’re nowhere near close. We are drawing conclusions about decision making without even considering what it is, what we do and whether it has been optimized. Because this has not been explicitly explored, we’ve ended up limiting our ability through constrained tools. And, the typical discussions are often the equivalent in the physical world of saying robots are faster at building deep mines with kitchen blenders than humans are. +
+
+If you are willing to accept that we've not optimized human decision making and you want humans to be able to participate i.e. Humans In The Loop (HITL) or On The Loop (HOTL), then keep reading. This is not to say that artificial intelligence is not useful — it is. However, we should not hastily discard our own ability to explore. +
+
+But isn't there a way to use LLMs to enhance our ability to explore? Yes. The key is to use the LLM to help build the tools that you need. We do talk about this in a later chapter but figure 25 spells it out. LLMs can readily provide summaries, but the problem with these summaries is that the answer is not explainable. Instead you can use LLMs to build deterministic tools that you can use to produce explainable summaries. This approach allows you to inspect what the tool does and even adjust it before you use it. +
+
+.Using an LLM to summarize or to build tools that summarize
+[#img-fig25-llm-usage]
+[caption="Figure 25: "]
+image::4-25_SBZmT1DXsLirFm9o.png[Figure 25: Using an LLM to summarize or to build tools that summarize,align=center]
+
+But why do I need to use an environment like Glamorous Toolkit? Can’t I just ask the LLM to produce the tool when I need it? Eventually they will. LLMs will be able to take more context into account and produce more sophisticated tools. They will also be able to guide and support you in the use of those tools. The explainability of an answer depends on how well we understand what the tool does. And the way we understand tools is how we understand anything else in a system: through tools. Therefore, you need an environment in which understanding an external problem is the same as understanding the tool with which you understand the external problem. It’s recursive and of course, eventually LLMs will provide this but you’re back to the problem of handing over your decision making to an LLM. +
+
+But I don’t understand how electricity is generated. What’s the difference with handing over this creation and understanding of tools to an LLM? Eventually, there will be no difference as long as we have a path to understanding what the tool does. But that path would require the LLM to create tools to understand tools and then tools to understand tools to understand tools and … it’s tools all the way down. You will still need some sort of structure to manage this all. +
+
+But can’t an LLM create me such a structure? Yes, eventually. This will be greatly eased by having a systematic way to describe this structure. The environment itself can become a language made out of visual and interactive operators. +
+
+But can’t an LLM create that language? Eventually. This is what we show in Glamorous Toolkit, that a language exists for decomposing problems in the same way. In fact, that language was used in the building of Glamorous Toolkit. As mentioned we will talk more on this point later in the book. +
+
+Can’t you explain now? We will get there … eventually. Just like your LLMs but much sooner. +
+
+Unlike the stuck cursor problem, typical software engineering problems are vast by comparison requiring even more exploration. Yet, even for a small case, it proved useful to tackle the problem through the lens of contextual tools. This benefit is more visible when the problem grows in size. And all this is due to the highly contextual nature of software. +
+
+== The contextual nature of software
+
+Think of a simple calendar application. It has months, days, years and the ability to add appointments. It's very simple. Many of the components needed to build such a simple thing are fairly standardised. So, what happens if you ask seven groups of engineers to build a highly well defined and constrained calendar application? Do they come up with the same structural design? Think again. In figure 26 we show the results of this very test. +
+
+.Seven calendar applications
+[#img-fig26-seven-calendar-apps]
+[caption="Figure 26: "]
+image::4-26_X-Z0tT-dTQtiDFc9.png[Figure 26: Seven calendar applications,align=center]
+
+In this experiment, seven groups of engineering students were given the task to build the same system. They were provided with a given set of libraries and a standard set of development tools to use. To constrain it even further, each system was evaluated externally using the same test suite. +
+
+In the figure above, we visualize the code structure of each system in terms of classes, methods and attributes and the relationships between them. Namely, the classes are depicted with black dots, the methods with red dots and the attributes with blue ones. A call between methods is shown with a red line, and an access to an attribute with blue lines. (Of course, we built a tool to produce this visualization) +
+
+What do we learn from this? Even in a highly constrained scenario, the produced structures are radically different. +
+
+To solve problems with any one of these systems, then you’re going to have to consider the context of the system itself. Yes, they are all calendar applications but they are not the same calendar application. A tool for one is not a tool for another unless we simplify the tool to ignore any context. This is basically what a standard tool does. It ignores context and treats every problem as the same. But, if the only tool you have is a hammer, then every problem becomes a nail regardless of whether you’re building a formula one racing car or a deep shaft mine. +
+
+The contextual nature of software means that we can predict classes of problems (e.g. the calendar speed) but we cannot predict the specific problems that appear in practice (e.g., when clicking on add meeting participant, the response is slow because the firewall throttles the access to the active directory of users). +
+
+Ready made rigid tools cannot be effective because they bake the problem in the tool upfront. They do solve a problem, but they solve someone else’s problem. A tool built before the context is known, will be solving generic issues, just not yours. +
+
+If we go back to the parallel with testing then tests can be created either after the code is written or before, as is the case with test driven development. However, tests are always created after the problem is known. We don’t go and download a suite of 100,000 ACME Certified Tests for Any Application because these tests would not know anything about our system. We want tests that are specific for the context of the system. +
+
+This principle is applicable to any tool. We should want tools that are specific for the context of the system. As we cannot predict the specific problem, and as we need a problem to build a tool, it follows that the only alternative is to create the tool during development, after each problem is known. +
+
+However, this leaves us with a question. If we need to explore to find the problem before we can build the tool, how do we explore? +
+
+== Defined versus dynamic exploration
+
+Let us suppose we decide to build tools to answer questions and each of those tools needs to be contextual. Doesn’t that lead to a situation where a large, core system could end up with thousands of tools? Yes, it does. It’s not that different to having thousands of tests. This leads to several further questions. Wouldn’t it be massively expensive to build and maintain thousands of tools? And, even if we can afford to have thousands of tools, wouldn’t that be overwhelming? Also, how do we hope to explore a system if we’re spending all our time trying to work out what tool we should be using? Let us take each question in turn. +
+
+=== 1) Aren’t thousands of tools massively expensive?
+
+In short: they do not have to be. +
+
+From a JetBrains study on Jupyter notebooks, we learn that people like creating notebooks copiously — they examined some 10 million of them. Each notebook represents someone’s analysis of a specific problem of interest to them. You can think of these as small tools that typically consist of only a few hundred lines of code. Jupyter Notebook is a toolkit that reduces the cost of creating and managing tools. +
+
+Another toolkit is Glamorous Toolkit (GT). This was used in the stuck cursor example. GT is itself built with and contains over 5,000 tools which were created during the development of the environment itself. +
+
+In figure 27, using a tool built specifically for this context, we provide a visualisation of the spread of contextual tools throughout Glamorous Toolkit. The visualization shows a treemap with all packages and their classes from the system. Each blue rectangle represents a class for which at least one contextual tool has been built. +
+
+.The use of contextual tools within Glamorous Toolkit
+[#img-fig27-contextual-tools-gt]
+[caption="Figure 27: "]
+image::4-27_DQOqfD7dgwC2TZd1u7MJtw.png[Figure 27: The use of contextual tools within Glamorous Toolkit.,align=center]
+
+The visualization demonstrates two things. First, that it is possible to create and maintain thousands of tools for a system even by a small team of eight people. Second, it shows that no part of the system is untouched by contextual tools once the possibility of creating them at low cost exists. The need is pervasive. +
+
+Furthermore, in this particular case, the average size of the extensions is 12 lines of code (of which 2 lines are the name of the function and a boilerplate annotation). Of course, some tools are more elaborate than others, but the start is most often a few lines that we build in minutes and see an increment and that we continuously expand as we need. The low threshold to start makes the approach feasible. +
+
+=== 2) Aren’t thousands of tools overwhelming?
+
+In short: they do not have to be. +
+
+There are billions of pages on the web. Yet, we do not qualify them as overwhelming. That’s because we are not exposed to them all at the same time. We do know the name of some (hello google.com), but most appear in context, during our exploration. Not only must our toolkit enable contextual tools to be built, it should also allow those tools to appear in the right context. In the case of systems, this is not a simple search for a tool but instead when inspecting an object or browsing a class, the right tools need to gravitate towards you. +
+
+Whilst obviously useful, given the number of notebooks, this is one of the limitations with Jupyter notebooks. The books are contextual tools as they are created for a specific problem, the toolkit itself does not mold itself to the context that you are looking at beyond simple searches. Where you do interact between notebooks (tools) you have to explicitly call that tool by name. This is a static or defined form of interaction. What is needed is for the right tools to appear based upon the context that you are exploring but that requires association of the tool to a context and some form of modelling of that context. However, whilst words are great this is best explained with an example. +
+
+=== Example: Andrej Karpathy’s tokenization explanation
+
+Not long before the writing of this book, Andrej Karpathy put together a tutorial on tokenization — a prerequisite for the current functioning of large language models. The tutorial has multiple parts including the stepwise implementation of an algorithm and an explanation of what tokenization is. Andrej is a prominent engineer and a brilliant teacher, and he starts by saying that “before we dive into code, I’d like to give you a brief taste of some of the complexities that come from tokenization” and then he goes on to exemplify how tokenization workshttps://youtu.be/zduSFxRajkE?si=1__f6guqVJyPGFor&t=353[ through an external application called Tiktokenizer]. +
+
+The app is based on the tiktoken library which is provided by OpenAI to help people explore the amount of tokens for a given input string. In addition to the basic counting of tokens, the app provides an interactive way to graphically explore the tokens as well. +
+
+Andrej is relying on this tool because it helps newcomers build an intuition, a mental model of what the technical algorithm does. However, this explanation comes from an external tool (see figure 28), outside of the development tool he is using — in his case, a Google collab notebook which is based upon Jupyter notebooks. +
+
+.Andrej's use of Tiktokenizer
+[#img-fig28-andrej-tiktokenizer]
+[caption="Figure 28: "]
+image::4-28_utxQZrVMlpm-F1XI.png[Figure 28: Andrej's use of Tiktokenizer,align=center]
+
+It's really important to grok this point, so we re-emphasise it. Whilst it might be technically feasible to rebuild the functionality of a tool like Tiktokenizer within a Jupyter notebook, the practice is not to do this but instead to constantly switch context to external tools, provided that those tools exist at all. So, what happens if we could easily (and cheaply) bring that tool into the context of the development experience? +
+
+To do this, we use a Moldable Development environment. In our case, that's Glamorous Toolkit and https://x.com/girba/status/1822742107259609233[we explain the algorithm's output through contextual views]. To illustrate the potential format of the explanation, one of our colleagues took the tiktoken library and wrapped it in a small project. While the tiktoken library works with strings and numbers, our mental model is about inputs and tokenization results. So, the wrapper adds entities like a TokenizerResult. When inspecting an instance of this entity, the inspector readily provides dedicated views, such as a graphical representation that's equivalent to the one from the web application as shown in figure 29. +
+
+.The wrapper for the Python object showing a graphical representation of the tokenization result
+[#img-fig29-python-wrapper]
+[caption="Figure 29: "]
+image::4-29_4crQCZTidd0RqcIU.png[Figure 29: The wrapper for the Python object showing a graphical representation of the tokenization result,align=center]
+
+This took about an hour in total. +
+
+So, why is this interesting? We now have an explanation closer to the development process which is “nice”, but isn’t this just a waste of an hour on pointlessly trying to avoid context switching? By bringing the tool into our development environment, it enabled us to show something that was not previously possible to see — an explanation of the algorithm. +
+
+More importantly, if we can explain how the overall algorithm works in terms of input and output, we can also explain more detailed pieces. Let's take a look. The tokenization logic is iterative. The input string gets transformed into numbers in steps, each step performing a compressing operation in which two tokens are identified and merged. We have a view which explains this logic, so let us now bring that view to each of these steps — see figure 30. +
+
+.Visualizing the tokenization logic for each step
+[#img-fig30-tokenization-steps]
+[caption="Figure 30: "]
+image::4-30_UrRvTByc27DzPDf_.png[Figure 30: Visualizing the tokenization logic for each step.,align=center]
+
+In the above we not only can see the visualization of the overall output, we see the visualization of each merge step. In this particular case, because we needed access to the code of the tokenization algorithm, we took the code that Andrej implemented during the tutorial instead of the blackbox tiktoken library. Once we had the previous infrastructure, the new increment was small, perhaps 15 minutes, to bring the total cost to 1 hour and 15 minutes. +
+
+By adding one more view to show the list of all merges, and concatenating it with the visualization of each merge, we basically get a postmortem debugger for the tokenization logic (see figure 31). +
+
+.Debugging the tokenization logic
+[#img-fig31-debugging-tokenization]
+[caption="Figure 31: "]
+image::4-31_qNEB3vmCIm-HijX4.png[Figure 31: Debugging the tokenization logic.,align=center]
+
+Now, Andrej is a fantastic teacher, but to provide his explanation he went to an app outside of his development environment. And when he got to explaining his algorithm, the explanations were delivered with plain numbers and strings. With just over an hour of effort, he could have had a visual debugger for the tokenization logic in the same environment and anyone else using the same class of Python objects would have access to the same. +
+
+Unfortunately, our expectation of how explainable systems are tends to be low. Interesting explanations are rare and when one does appear it is somewhere else, removed from where development happens. In contrast, our little demo shows that with little added effort we can make interesting explanations be an integral part of the development experience. These explanations should not be unusual events. They should be pervasive. Everywhere. All the time. And most importantly, in context. +
+
+Tools are overwhelming only if we see them all the time. If our tokenization debugger appeared every time we did an arbitrary exploration (e.g., inspecting network traffic) then we would quickly get overwhelmed especially if the 5,000 other tools in Glamorous Toolkit appeared at the same time. However, if they appear when they are meaningful, they become useful. Thousands of tools can co-exist by building and making them appear in context, e.g. only the ones that matter appear for the object under investigation. +
+
+=== 3) How can we hope to explore a system if we’re spending all our time trying to work out what tool we should be using?
+
+In short: you’re not. If the toolkit is designed for dynamic rather than defined exploration. +
+
+In order to understand this, we first need to clearly understand what a tool is. A tool is something that solves a problem. A generic tool is something that was designed for generic problems but we try to use this to solve our problem. This is known as exaptation. A contextual tool is something that is designed to solve our specific problem. In order to design it, we need to explore our problem. Hence, exploration should be part of the design process for the tool. +
+
+However, no problem is an island. In solving a problem, we often have parts of the answer but not the entire answer. These parts are reusable components that were created as part of other explorations. In our kitchen blender analogy, whilst a kitchen blender is not useful in deep shaft mining, it does contain nuts, bolts and copper wire which are part of mining equipment. In the same way, in solving our problem there will often be components from the solving of other problems. Hence our tool often contains components built for other explorations as well as components built specifically for ours. We assemble these into a contextual tool that answers our question. +
+
+For example, to answer the question "How does tokenization work" we need to answer the question "A) How does tokenization work for a given input?", "B) What steps does the algorithm take?" and "C) What happens at each step?". It is the combination of A) + B) + C) that gives us our overall answer, see figure 32. +
+
+.Context and contextual tools
+[#img-fig32-context-tools]
+[caption="Figure 32: "]
+image::4-32_GJ8SKOjtqF8Kx_2w.png[Figure 32: Context and contextual tools.,align=center]
+
+Tools can be designed in at least two different ways: verb-noun or noun-verb. A verb-noun design starts with the action and then asks for the content. For example, when you invoke Open from a File menu, you get a dialog in which you must select the file to open. Open is the verb, the selected file is the noun. The tool is not contextual in nature as the context (e.g. the file) has to be provided to the tool. +
+
+In contrast, when you select the file in your file explorer tool and double click on it to open, you are facing the opposite design: the content comes first and the verb follows. This design also allows us to add options in a context menu to open the file with various other tools. Such a design is more contextual in nature because the content governs what can be done. This is the paradigm that a moldable development environment must follow — context first, action second. Hence in the figure above, the inspectors (the right hand panes) are reacting to the content under exploration by providing contextually appropriate tools. Furthermore, each tool allows us to interact with it and spawn dynamically connected contexts. +
+
+That last part is really important. Remember, each tool offers an answer to a question. Hence, in our exploration we are combining not only contextually relevant answers to other questions but also our environment is adjusting to the context under exploration, with tools popping out when relevant. This also lays the ground for surprising discoveries because as we explore, we wander into different contexts and are able to see what previous explorers have already found. We can combine previous explorations with our own and the overall experience emerges out of small increments without an overall dedicated tool. In other words, our tool literally molds out of our exploration. +
+
+This process is known as dynamic exploration which complements defined exploration (see figure 33). +
+
+.Defined vs Dynamic Exploration
+[#img-fig33-defined-vs-dynamic]
+[caption="Figure 33: "]
+image::4-33_qYHQre0QDW55LZA6.png[Figure 33: Defined vs Dynamic Exploration,align=center]
+
+A defined exploration can be seen in notebooks, such as Andrej Karpathy's tokenization example or the notebook in the image above. These notebooks are composed of multiple small snippets of text, code and associated results. When the notebook is created, every new snippet is indeed added dynamically, mostly at the end, but as soon as the notebook has been created it can mostly only be consumed from top to bottom. This form is extremely useful for describing what someone has learnt in the past, as exhibited by the 10 million notebooks created in the data science space, but it offers little possibility of going off on a tangent starting from the middle of it. You can interject a snippet in the middle of the notebook, but this breaks the overall story. Moreover, we get to see the result of executing snippets, but we cannot explore their output beyond the scripted visualization. +
+
+But why do we need dynamic exploration? Because new questions require new answers that need exploration. Those are nice words, but what does this mean in practice? It means our tool should emerge from our exploration of the problem and should not be constrained to someone else’s problem. The critical change needed for this dynamic exploration is that the tools must not only be written for a context but also appear in a context. When exploring an object, only the few tools relevant to that entity should appear as discussed in the previous section. This is the equivalent of late binding answers to the question rather than setting off with tools with preconceived notions (i.e. early binding) of what the answer might be. +
+
+So, “How can we hope to explore a system if we’re spending all our time trying to work out what tool we should be using?” You’re not if your environment is moldable. However, more importantly, you should be asking of other tools “How can we hope to explore hard problems if our tool doesn’t mold to it?” +
+
+== Dealing with hard problems
+
+All interesting problems are inbetween existing tools. The hardest problems are those for which we do not know how to formulate an interesting question. An example of a hard problem is the stuck cursor one as described earlier in this chapter. In such cases, we start by describing what we know already. This then provides visibility into the adjacent unexplored and helps us discover interesting questions. +
+
+The difficulty of the problem is not in the solution i.e. providing the right answer but in finding the right question. In our case, once we saw the problem, the solution was easy and it involved changing exactly one character of the code (“=<” was changed into “<”). Finding this was possible through the serendipitous nature of the dynamic exploration +
+
+== What did we learn?
+
+The explainability of a system depends not only on the system itself, but also critically on how we extract information from it and how we use that information. Traditional approaches focus primarily on code quality metrics and readability, overlooking the crucial roles of tools and skills. The example of the stuck cursor problem demonstrates that once developers could see the actual problem through specialized inspection tools, the solution became easy. The system did not change. It was the creation and the use of the tools that changed the problem. +
+
+By building tools specifically designed for the context at hand, seemingly insurmountable challenges transform into manageable tasks. This can lead to thousands of contextual tools. These need to be inexpensive to create and they must only appear in the context for which they were defined to avoid overwhelming the engineer. +
+
+The need for contextual explanations is pervasive due to the contextual nature of software systems. Even highly constrained implementations will result in radically different structures, explaining why rigid, pre-built tools often fall short. +
+
+The pervasive use of notebooks shows that the need is not singular to software development. Notebooks offer defined explorations that are to be consumed mostly in the same combination they were created. But as any answer provides the context for new questions, we can still benefit greatly from an environment that allows for dynamic explorations as well. An environment that allows us to jump from context to context at will. +
+
+== Homework
+
+In this homework assignment, you will apply the concepts of system explainability by identifying, designing, and evaluating contextual tools for a software system of your choice. This will require some engineering skill, so if you’re not an engineer but instead run teams of them or interact with them, go find an engineer to help. +
+
+Step 1: Get a stopwatch. Set the timer for 60 minutes. Start working on the following steps and stop when the timer finishes. +
+
+Step 2: Select a large software system that you work with regularly. Open up a notebook. To the notebook add a title for the system. +
+
+Step 3: Determine the number of lines of code within your system. Add this to the notebook. +
+
+Step 4: Determine the distribution curve for function length within your system. Add this to the notebook. +
+
+Step 5: Determine the distribution curve for “if” statements within functions in the system. Add this to the notebook. +
+
+Step 6: Build a mechanism to select a particular distribution of “If” statements (such as 35 “If” statements in a function) and browse directly the functions that are responsible i.e. you should be able to click on the results in your notebook (from step 5) and examine the code. +
+
+Step 7: Find a function with a high number of “if” statements and go explore why this is. +
+
+Step 8: Generalise the tool for any type of statement, such as for loops. +
+
+Working in GT (Glamorous Toolkit), these tasks took about 18 minutes to complete. For example the distribution curve of IF statements is provided below (figure 34). How far down the list you get will help you understand how moldable your development environment is. Without a highly moldable environment or a pre-built tool designed for these specific problems then the list will be difficult to complete. +
+
+.Distribution of IF statements in a function
+[#img-fig34-if-distribution]
+[caption="Figure 34: "]
+image::4-34_aCauagXBRlG9XsmS.png[Figure 34: Distribution of IF statements in a function.,align=center]

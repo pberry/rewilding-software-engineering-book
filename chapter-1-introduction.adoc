@@ -1,0 +1,52 @@
+= Chapter 1: Introduction
+
+== What is this book about?
+
+This book addresses a long-standing crisis in software engineering, first identified at a 1968 NATO Conference. The crisis, as described by Edsger Dijkstra in his Turing Award lecture, stems from the rapid increase in computer power: +
+
+“The major cause of the software crisis is that the machines have become several orders of magnitude more powerful! […] as long as there were no machines, programming was no problem at all; […] and now we have gigantic computers, programming has become an equally gigantic problem.” +
+
+Since Dijkstra’s observation, computing power has continued to increase exponentially. As a result we’ve written ever more code, ever more abstractions and the total body of software has grown continuously year over year. +
+
+While growth itself isn’t inherently problematic, this ongoing crisis manifests when we fail to deal with the issue of legacy as we end up surrounded by old systems that we struggle to retire, to maintain or to take apart and refurbish for new purposes. From this perspective, the software industry behaves no differently from the plastic industry: we build faster and faster but are unable to recycle old systems. This is a systemic problem affecting every company. +
+
+Many developers initially shy away from legacy code, but those who learn to appreciate its intricacies and historical value can often find unexpected beauty in modernizing these past masterpieces. Unfortunately, this beauty is hidden in millions of lines of code making it difficult to understand. Hence, software legacy has become synonymous with being unpleasant and almost inhumane. Software engineering is the only domain in which “legacy” has a negative connotation even though it is where we spend the vast majority of our working time. Addressing the problem of legacy requires a humane systematic solution. +
+
+This book proposes that the best way to tackle this challenge is by reframing software engineering as a decision-making process about systems that are too large for us to fully grasp. Furthermore, these systems exist in ever-changing environments. To effectively refurbish such systems we must be able to take them apart, but before we can do this we first need to understand the parts. This process is highly manual, mostly consisting of reading. Trying to understand large systems in this way is an overwhelming task. +
+
+Consider the Apollo moon landing. The total number of lines of code were over 130,000. But, what does that mean to read? Fortunately, Margaret Hamilton, director of the software engineering effort and the one credited with coining the term “software engineering”, was photographed standing next to the printed source. +
+
+[caption="Margaret Hamilton, 1969, Code for the Apollo moon landing, Courtesy of MIT Museum.",link=https://miro.medium.com/v2/resize:fit:1400/0*UtzBm2jK9iZIBmbT]
+image::1_UtzBm2jK9iZIBmbT.png[Margaret Hamilton,413,517,align=center]
+
+Now consider that the number of lines of code in a core banking system can be into tens of millions i.e. 100x what was used to land Apollo on the moon. Just reading all that code in minute detail is a daunting task requiring years of work. And that’s just reading the code — assuming the system remains static — and then we have to understand it in order to make a decision. +
+
+The perspective of software engineering as a decision making activity matches what people do implicitly. However, most people don’t think explicitly about the process of decision making and whether it can be improved. At the GOTO 2024 conference, a 500 developer audience was asked whether they agree with the statement that they spend most of their time reading through textual artifacts (e.g. code, logfiles) to figure systems out. Most did. But when asked when was the last time they talked about how they do the reading, it turned out that this conversation rarely occurs, and when it does, the reading part is never challenged. If we do not talk about the process, it’s not explicit. If it’s not explicit, it does not get optimized. Our lack of reasoning about decision making itself has led to, for example, a belief in architecture diagrams that don’t match reality, a failure to measure what really matters, and an atrophied ability to ask questions. +
+
+So what’s the solution? Are we just talking about becoming faster readers? No. You can’t speed up reading by a factor of 500x but you can improve decision making by that factor. This requires a significant change of perspective that starts with understanding why we read code and if we need to read it at all. This is the opportunity we put forward in this book through a technique known as Moldable Development that can be applied in a multitude of software engineering situations.
+
+== Who is this book intended for?
+
+The lessons in this book are widely applicable to decision makers — whether software engineers, product managers, CTOs or CEOs — who need to ask and answer questions about systems. However, this book was mainly written for those poor folk dealing with legacy systems. We say “poor” because in today’s world of digital technology and AI, there is little love given to legacy environments or to those who have to manage the migration away from them. This book seeks to address that imbalance. +
+
+And this imbalance is all around us. According to Forbes, more than 60% of corporations rely on legacy systems to “power customer-facing applications”. Maintaining legacy systems is a $1.14 trillion market. For example, according to a Microfocus survey (2022) the world depends upon 800 billion lines of legacy COBOL code. A McKinsey survey revealed that the technical debt due to legacy systems accounts for 20% to 40% of the entire technology estate. In 2018, the US Federal Government spent 78% of its IT budget on operations and maintenance i.e. keeping the lights running. Acropolium (a specialist in legacy migration) estimates that the average migration project takes 4 years. At the same time, the Advanced 2020 Mainframe Modernization Barometer states that 74% of organizations have failed to complete their migration projects. Additionally, 28% claim that their legacy systems are between 20 to 30 years old. +
+
+Most of the statements above are created by surveys and hence are statements of belief. None of these reports should be considered rigorous by any measure as we do not have a means of interrogating the true legacy estate. They are a painting of the landscape, not the landscape itself. Nevertheless, as a whole they do indicate a global chorus singing a common refrain: legacy is expensive, hard and it needs to change. +
+
+In a world where nearly 90% of businesses are expecting Generative AI integration to free up 75% of their workload, is it any wonder that many CIOs are hoping that AI will solve the legacy problem for them? +
+
+In this book, we aim to change this picture and to also explain in the process why simply hoping for AI is not a solution. The major cause of all our headaches is the method by which we ask and answer questions about our systems.
+
+== How did the book get written?
+
+The book is an overview of research and development that spans some 15 years involving colleagues at feenk and elsewhere. While Simon and Tudor are behind the writing and mapping, and even if Tudor was the one that coined the initial idea, the result of what we call Moldable Development today is very much the work of a collective. That research is still ongoing due to the size of the problem space, and so this book should not be seen as a simple recipe but the beginning of a conversation that we, as an industry, should have. In this spirit, the book is provided as Creative Commons Share Alike as we hope others will not only learn our lessons but build upon them.
+
+== Why rewilding?
+
+Rewilding is a progressive approach to conservation that aims to restore ecosystems to a more natural state by allowing nature to take care of itself. An example of this is the reintroduction of gray wolves to Yellowstone in 1995 having previously been eradicated in the 1920s leading to significant ecological imbalances. The effect of rewilding was to change the grazing patterns of the elk population allowing for vegetation to recover and increasing biodiversity as the vegetation supported a wide range of diverse plant and animal species. This included a resurgence of beavers which caused river system changes through dam building resulting in changed hydrology which reduced runoff, recharged groundwater tables, improved water quality and led to a growth in fish populations. An apparently small change led to a new sustainable equilibrium that had far reaching consequences. +
+
+Of course, not all interventions in an environment have positive effects. For example, the introduction of the cane toad in Australia backfired dramatically due to the explosive growth of toads. It has reached the point at which it is now considered a threat to the environment. For these reasons, successful rewilding efforts require a lot of upfront analysis and continued observation. The overall goal is that changes to the environment should enable a new sustainable equilibrium. +
+
+In the world of software, we intend to reintroduce our wolf — the conversation on decision making — and our goal is to make this engineering field both humane and habitable. After 15 years of research and practice, we understand that far reaching changes are possible. We also understand that once a change is made it takes time for a new equilibrium to form. We would ask that if you decide to pursue our pathway that you allow time for changes to settle.
+
+

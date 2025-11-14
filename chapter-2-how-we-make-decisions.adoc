@@ -1,0 +1,204 @@
+= Chapter 2: How we make decisions
+
+== Why talk about decision making?
+
+Developers alone spend more than https://lepiter.io/feenk/developers-spend-most-of-their-time-figuri-9q25taswlbzjc5rsufndeu0py/[half of their time trying to figure out systems] enough to determine what to do next. They might explore the impact of a change, the root cause of a bug, or how to migrate a component. The further we go away from the code editing and committing, the more it becomes about decisions such as architectural or product choices. +
+
+As a whole, software engineering can be viewed as primarily a decision making activity about a continuously changing system and surrounding environment. But what does that decision making process look like? This is rarely a question we ask ourselves. +
+
+Instead of questioning the process of decision making, we tend to focus on the outcomes of the decision made i.e. could we have made a “better” decision that is more aligned with the business (the outcome) rather than could the decision have been made in a “better” way (the process)? Ideally, we need to do both but we need to start with the process first. +
+
+In general, the rational way to make engineering decisions can be described through the following steps :
+
+. We *assess* the problem
+. To assess the problem, we need to *explore* the systems we are looking at.
+. To explore the system, we need to have a *conversation* with either a person or the system.
+. Having a conversation requires *information* that we can share or can be shared with us.
+. Information does not just appear but it must be *synthesized *in some way.
+. To synthesize information, we need some form of *development experience*to interact with the systems.
+
+These steps are shown in figure 1. +
+
+.The steps for decision making
+[#img-fig1-steps-for-decision-making] 
+[caption="Figure 1: "] 
+image::2-2_0uvLuosVShCt_qKb.png[Figure 1: the steps for decision making.,700,494,align=center]
+
+The steps have been drawn in a https://medium.com/wardleymaps[Wardley Map]. These maps provide a visualization of the problem space and are based upon a systematic notation (they also make Simon happy). We use a map because trying to explain the characteristics and consequences of decision making in software is an incredibly hard thing to do. We know this because we have tried to communicate these ideas both conceptually and through technology for 15 years and those explainations always fell short. The problem is the limitation of narrative. Maps allow us to present complicated and multi-dimensional information in a succint form. +
+
+The basics of a Wardley Map include a chain of connected components (known as a chain of needs as each component needs the next) with each component positioned according to how evolved it is on an x-axis. The x-axis always has four sections denoted with a label representing different stages of evolution of capital. That capital may include activities or practices or data or knowledge. For our maps, since we are using multiple forms of capital, we chose two labels for each section of the x-axis. These are concept/genesis, emerging/custom built, converging/product and accepted/commodity. +
+
+Written as red text, the labels of concept, emerging, converging and accepted describe how much agreement there exists on the process of information use. These correspond to the components and connections drawn in red on the upper part of the map. For example, *exploration* is mostly considered an emerging practice, for reasons we describe later. +
+
+The blue labels of genesis, custom built, product and commodity describe how industrialized the practices and tools for information extraction are (the connections drawn in blue). For example, there exist numerous competing products for *development experience*. +
+
+Many of the ideas in this book can feel as abstract in description as they are powerful in practice. Hence, to help the reader overcome this, we explain each of these steps using examples from our experience, in a question and answer format. Let us start with the question of “How do we go about making decisions in practice today?”. To answer this, we start at the bottom of the map (figure 1) and work up. +
+
+We can only experience a system through tools that expose that system through some form of development experience. Current practice is to use *monolithic *tools that are designed for general use without catering for specific contextual needs. Hence, the software tools we use to investigate a hospital system are usually the same tools that we use to investigate an online gambling site. In the physical world, this is the equivalent of trying to build a formula 1 racing car with the same set of tools used for digging a deep shaft mine. +
+
+These standard software tools are so pervasive that you can probably describe them without even looking. They will have a navigation pane on the left, a basic search function on top and some general window which displays information such as the code of the item you’ve selected in the navigation pane. You might even be able to right click on an item in the navigation pane to get some properties. Even so, how you view and interact with the “data” of the system has been pre-defined, i.e. the tool constrains how you view the digital world. +
+
+Using these tools, we *manually inspect* the system in order to synthesize the information we require. This is where we spend more than 50% of our entire development time including reading lots of code, investigating error traces or exploring log entries in order to find the information we think we need. +
+
+The information we find is then further consolidated *manually* into views of the system. For example, we might create an architecture diagram, a domain model or a network diagram. We often have to leave our monolithic tool that we used to synthesize the information in order to present it in a different format e.g. a powerpoint presentation of an architectural diagram that represents the code that we found with a code editor. Sometimes we don’t even use digital tools to create these views but instead rely on whiteboards, paper or even post-it notes. +
+
+Occasionally automated tools are used, such as a graph of events over time, but again they are typically generic and highly constraining with pre-defined views. You will have experienced this if you’ve ever used one of these tools and found that the graph isn’t quite what you needed but had no way of changing it within the tool, often resorting to trying to export the data into a new tool such as Excel in order to create a “better” graph. +
+
+The views we created are considered to represent the data about the system and our conversation is based upon those views such as the number of events over time in the graph and possibly connections to our network diagram. But ask yourself, how representative are those views? How many architecture diagrams have you seen that are actually wrong or have missing components that are discovered later or have changed since the time the architecture diagram was created? Hand drawn diagrams about a system are not unlike paintings that are used as a way to document history. They document the perspectives of the authors at that time more than the system itself. We call this *“data centric”,* but because we have no real idea how representative of the system these views are, we’ve added quotes. +
+
+This situation is exacerbated in a world of continuous deployment where it has almost become fashionable to give up on architectural diagrams by either keeping them high level with just enough information or relying on a discipline of regular manual updates. An https://www.infoq.com/articles/why-architectural-diagrams/[InfoQ article] states “One of the biggest mistakes is to create detailed architectural diagrams for parts of the system with high volatility”. This is basically an admission of defeat, an acceptance that we should rely on that which is unreliable. Even when vendor tools are used, it is typically considered to be insufficient and “need to be complemented by manually modeled diagrams” because of the inability of the tool to capture important contextual information. +
+
+These conversations are part of how we explore the system. In software exploration, the process is commonly driven by a series of _ad-hoc_ conversations and interactions. Contrast this with geographical exploration which follows a more structured approach. It begins with a blank canvas and systematically models the landscape through movement, careful observation, and the use of specialized tools like theodolites to create reliable maps to help us visualize the space. +
+
+Without reliable system visualizations, any exploration that depends on manual diagrams might only be partial and can hold hidden beliefs. This leads to assessments that are predominately based upon whether we believe what we are being told by the views created and hence our *gut feel*. +
+
+In summary, the current practice can be described as gut feel assessmentbased upon ad-hoc exploration using what are perceived to be “data-centric” conversations built upon manual information that is synthesized through a process of manual inspection using a development experience that consists of monolithic tools. We’ve enhanced our Wardley map to reflect this current practice in figure 2. +
+
+.the common steps for decision making in software engineering today.
+[#img-fig2-common-steps]
+[caption="Figure 2: "]
+image::2-2_0uvLuosVShCt_qKb.png[Figure 2: the common steps for decision making in software engineering today.,700,494,align=center]
+
+When creating this new map, we’ve introduced the idea of pipelines and considered how evolved the components of today’s practice are. Pipelines represent a common meaning. Whilst there might be significant disagreement between software engineers over how exploration is achieved, there is general agreement (an accepted consensus) that their approaches are ad-hoc and there is little agreement over what a more structured method would look like. Hence, in the map the notion of ad-hoc exploration is considered more evolved than the notion of exploration itself. +
+
+Using this logic, each of the components from ad-hoc exploration to monolithic tools were added. Manual inspection was described as an emerging practice rather than an industrialised one because the rigidity of our monolithic tools often forces us into other highly manual processes such as reading code. There exists little consensus over what manual inspection means and topics such as reading code are rarely discussed. Whilst reading code does not scale with large systems containing millions of lines of code, it has the advantage that it can be adapted to any context and is hence used to circumvent the rigidity of today’s development experience. For example, when the tool doesn’t show connections between code objects, the software engineers are forced to read the code to find those connections for themselves. +
+
+While there are shortcomings to today’s approach, there are three takeaways worth noting:
+
+. Any decision about a system, regardless of whether technical or business focused, requires information from the system.
+. This information has to be synthesized somehow from the system, and the only way to do that is through a tool that provides a development experience.
+. Developers today write code for a fraction of their time. They spend most of their time reading because they want to understand what to do next. The largest single cost in software engineering is figuring the existing systems out which is something we do not optimize our work for.
+
+== How did we get here?
+
+In a world of abundance of data, automation and systems we have somehow ended up with decision making processes that are more ad-hoc choices based upon manually created views. The cause of this situation appears to be the use of generic tools, which certainly suits the tool vendors to which we have handed over part of the process of understanding a system. We have accepted that building tools is hard — it takes money, it takes time — or at least, that is what tool vendors have always told us by highlighting their world class solutions and beloved tools that create lightning speed. https://devblogs.microsoft.com/blog/building-the-future-of-software-development-together[“Software is a team sport”] with the tool vendor as the referee, pitch and equipment provider. +
+
+If you want to pick a villain, a potential candidate would be Apple who took the concept of personal computing developed at Xerox Parc and encased it in a physical box and impenetrable apps with the Apple Macintosh. Another would be Microsoft which then sold its own concept of personal computing to the masses by removing the physical box — any x86 architecture would do. In both cases, the operating environment became more of a black box and what was sold was convenience of doing tasks rather than an understanding of what was happening. Despite the glossy marketing brochures, the vendors did not enable or empower understanding in people rather they infantilised them into tightly constrained spaces dependent upon the tools they sold. +
+
+Our natural inclination is to fight against this. Children start to build computational systems even within highly constrained environments like Minecraft or Roblox. If we wish to enhance these natural inclinations, we need to remove the constraints of tools, we need to provide more freedom. This is the central idea, expressed as four freedoms, behind the counter revolution to all of this control which is the open source movement. +
+
+Computers were supposed to augment human intellect, not diminish it in the pursuit of convenience. The path we have taken has had such a devastating effect that most professional software engineers don’t even conceive of building their own tools. Even within development forums, you commonly see examples of problem solving that reach the limit of the tool where the engineer gives up and suggests any further exploration is handed over to the tool vendor. Worse than this, many have almost replaced exploration and understanding with searching the web or glorified forums for answers. This is exemplified with endless https://www.youtube.com/watch?v=nIay1a6H8ao[infomercials] on the “best answer to all your coding questions” — Stack Overflow.
+
+== Example: Trying to optimize a data pipeline in the traditional way
+
+To explore these ideas further, we turn to a real world example. A large corporation wanted to optimize the performance of a central data pipeline by an order of magnitude. This was required from a business perspective. In their case it was the main marketing pipeline from which offers were sent to millions of customers, and they needed to be able to react much faster to changes in the market environment. The problem was visible all the way to the C-level and an initiative was started to reach the business goal of a quicker response to the market. +
+
+However, after a few years of effort, the data was still moving through the pipeline at the same speed as before. So, how can it be that all the effort made no difference in the end? People cared about the problem and they had spent many millions of dollars in pursuit of a solution. +
+
+To explain the environment, we will use their manually written high level architectural diagram (figure 3). +
+
+.high level architectural diagram.
+[#img-fig3-high-level]
+[caption="Figure 3: "]
+image::2-3_EiDcte2U3_fq7lvv.png[Figure 3: High level architectural diagram.,700,494,align=center]
+
+The pipeline consisted of an internal domain-specific language (DSL) based on Excel. Programmers would write elaborate queries in Excel spreadsheets and these were automatically converted to database transformations that were applied to the data which would end up in both a SQL database (Oracle) and a NoSQL database (Cassandra). Both of these databases were used as an input for a low code platform that also offered AI abilities and on which other programmers wrote scripts specific for various marketing campaigns. +
+
+The architecture was simple but no amount of engineering or reading stack overflow was helping to optimize it. Despite a lack of performance metrics, their investigation led them to believe that there might be too much data generated along the pipeline that was not used in the end. +
+
+Their best guess was that the problem was “dark data”, the equivalent of “dark matter” — lots of stuff we cannot see but has an impact. The teams working with the DSL did not have any visibility on what was actually being used. The teams working on the low code scripts could only see the data from the databases, but they did not know what transformations affect that data. +
+
+To make matters more complicated, the low code platform was indeed believed to be fulfilling its promise of helping people to create code faster, but it offered no support for either performance measurement or for tracing where a piece of data was used. Due to all these observations, they realized that because they were working in silos, they could not optimize the overall pipeline. They understood that they needed accurate data lineage to verify their beliefs but there were no tools for their specific combination of technologies or relevant stack overflow articles. In a system which contained tens of thousands of variables, they had been forced to spend person-weeks trying to manually see how just one variable was used through the pipeline. +
+
+In summary, the method of assessing the situation included a development experience consisting of monolithic tools which constrained what they were able to do for convenience. They synthesized information through manual inspection. For example, they attempted to create traces of how some variables were passed through the low code scripts by manually reading through the code. They consolidated information into manual views of the system. The high level architecture diagram in figure 3 was such an example. Their conversations were based upon those manual views and a belief they were representative of the system. These conversations led them to further beliefs that there “might be too much data generated along the pipeline that was not used in the end”. Their exploration of the system consisted of a series of ad-hoc conversations and interactions with the system. This method was unsystematic and mostly guided by the individual curiosity of the software developers and architects from different teams. They assessed and made their decisions based upon their beliefs in this exploration. The result was millions of dollars spent on investment with no discernible impact.
+
+== A new path: Moldable Development
+
+In a world of rigid tools, manual inspection, ad-hoc exploration and gut feel, a group of researchers (that later found a home at feenk) asked whether another path for decision making was possible? This required challenging the way we make decisions, the way we think about tools and the way we interact with systems. Step by step they developed a new path known as Moldable Development. To understand this, let us once again run through the steps of decision making in reverse order. +
+
+We abandon the monolithic tools which normally define our development experience. Instead we choose to compose the experience out of *micro tools*, each of which was built to answer a specific question for a specific context. Using our micro tools we synthesize the information we require from *specific coding* i.e. a direct, unmediated feed of the system. This synthesization requires that the cost of creating the tool is cheap enough that it has no material impact e.g. built in minutes or hours rather than days, weeks or months. It is critical that the process of manufacturing micro tools should be as industrialised as possible, ideally through the use of a toolkit. Similar dynamics happened in the space of testing. When the cost of creating a single test became so small it did not matter, automatic and industrialized testing became adopted at scale. We can regard a test as a form of micro tool that takes the execution of a system and transforms it into a red/yellow/green signal. The same idea can be extended to any tool, including visualizations or queries. +
+
+The information is then presented in *generated views*. These views directly feed from the information which we synthesize from our system through micro tools. All the information, wherever it is presented, can be considered both live and directly extracted from the system. It has not been manually created. It is not unlike a photograph replacing a painting as a means of documentation. +
+
+The generated views in effect model the system. Our conversation changes from a “data centric” to a *model centric* approach that is generated live from the system and can be directly interrogated. +
+
+Our exploration changes from ad-hoc to a more formalized approach that we call *Moldable Development*. We use the model of the system to ask new questions as we explore more of the system. To answer these additional questions, we constantly create new micro tools synthesizing new information which we then codify into our model of the system. The more we explore, the more complete this model of the system becomes. This mimics geographical exploration, as we follow a more structured approach starting with a blank page and then systematically model the landscape through observation using micro tools as our own theodolites. +
+
+The assessment becomes *hypothesis driven* and we make our decisions based upon exploring the model which is created directly from the system and contains no necessity for belief. We do not need to trust what we are being told as we can directly interrogate the model which itself is generated live from the system. +
+
+The new practice has been added to our Wardley map in Figure 4. +
+
+.the new path for decision making.
+[#img-fig4-the-new-path]
+[caption="Figure 4: "]
+image::2-4_SL3Zj-bZuiGcJdA1.png[Figure 4: the new path for decision making,align=center]
+
+== Example: Optimizing the data pipeline following the new path
+
+To explore these ideas further, we return to our real world example. A large corporation wanted to optimize the performance of a central data pipeline by an order of magnitude. After years of effort, the data was moving through the pipeline at the same speed as before. This led to a situation where the business and engineering were in conflict and the pressure was mounting on engineering to find a solution. +
+
+When you find yourself spending effort that seems to have no effect on reality, it is plausible that your model of the system differs significantly from the actual system. In such situations, you want to first improve your ability to see the actual system. +
+
+Our first hypothesis was that maybe their lack of results was because of an incomplete understanding of the system. Hence, our first question was “What does the system look like?” +
+
+In our case, we wanted a tool to give us an accurate perspective of the system. But given the combination of technologies and the specificity of the business case (such as, what data points are being used in a specific marketing campaign), there exists no such tool out of the box. We had to create it. +
+
+While building the model, we realized that the output from the first system did not match the data from the databases. This small observation made the team discover a whole external 3rd party system they were not aware of! This is shown in figure 5. +
+
+.adjusted high level architectural diagram.
+[#img-fig5-high-level]
+[caption="Figure 5: "]
+image::2-5_8AT-2kf1CIOp_kDK.png[Figure 5: Adjusted high level architectural diagram.,align=center]
+
+This confirmed our idea that their visibility into the system was partial and inaccurate, and past decisions had been based upon this perception. They needed an accurate overview. Since an overview is an aggregation of details, to create an accurate representation, the tools had to start from the smallest scope such as how a single property traverses the pipeline. +
+
+Figure 6 shows the generated view from one of the tools. A single input (the blue dots in the Internal system) impacted multiple other points of data (the red dots in the Internal system). These points of data then became inputs (blue dots) into the External system and impacted further data (the red dots in the External). Finally these points of data became inputs (blue dots) into their low code system. +
+
+.data lineage of a single property through the pipeline.
+[#img-fig6-data-lineage]
+[caption="Figure 6: "]
+image::2-6_4QjGDfpvr2U6fD.png[Figure 6: A data lineage of a single property through the pipeline.]
+
+Without an understanding of this flow, any attempt to optimize the entire system was likely to be ineffective and fraught with failure. This is exactly what they were experiencing. +
+
+Based on the property-level data lineage, we constructed tools to generate multiple pipeline overviews. One such overview quantified the amount of data produced along the pipeline and can be seen in Figure 7. +
+
+.overview of the pipeline.
+[#img-fig7-pipeline-overview]
+[caption="Figure 7: "]
+image::2-7_f5JBqzaQ2Hvi40vj.png[Figure 7: The overview of the pipeline.,align=center]
+
+For each system, the visualization depicts groups of properties that are used or not used downstream in other systems. The red parts correspond to properties created but not used later on. In essence this was “dark data” i.e. data that had no interaction with the rest of the system but added “mass” to the system. +
+
+These visualizations showed the team that they did indeed generate data they were not using, but more importantly, it made them realize that the situation is not hopeless and that it is possible to get an overview over the system, even if it was made out of heterogeneous and old components. Based on the input, they decided to redo the pipeline by consolidating the information to eliminate the need for unnecessary transformations. +
+
+Taking a step back, we started with an initial question of “Why are our services slow?” which then led to a question of “Is there useless data generated?” which required a question of “How is data traversing the pipeline?”. To answer these questions, we constructed a development experience consisting of micro tools that synthesized live information across our data pipeline. The conversations were based upon the live information, such as the generated views from figures 6 & 7, rather than any erroneous belief as originally existed in figure 3. +
+
+This case shows that it is viable to have a systematic approach for exploration that consists of building a model of the system by asking questions and answering those questions through tools that use the system itself. In total, 54 distinct micro tools (i.e. at least 54 answers to questions) were needed to properly answer the top level question of “Is there useless data generated?”. This required only two person-months of effort. Compared with the previous attempts which were measured in hundred person years and many millions of dollars of direct costs, this is at least 600x factor of improvement.
+
+== How relevant is the example to you?
+
+It’s tempting to look at the example and wonder “How could they miss that 3rd party system?” or state that “We wouldn’t do something like that”. The team of engineers at the client were extremely capable including a global leader in the service integrator industry. The engineers were all highly qualified with degrees and industry qualifications. However, this system was large with multiple smaller pieces that had been built over many years. People had retired, and component systems had been forgotten about. The team was also siloed into different groups — an internal system team, a database team, a low code team etc and no overall picture existed. +
+
+Whilst this might appear as an extreme, we would argue based upon experience that highly skilled teams, often operating in silos, trying to manage significant legacy environments with a less than adequate model of the system is commonplace, if not the norm. It does not surprise us that 83% of data and legacy migration projects are reported to either fail or exceed their budgets or schedules. What surprises us is that 17% succeed. However, even if that 17% is correct then we would expect that the results could be achieved at a much faster speed and lower cost. +
+
+If you have any form of legacy estate, then we suspect the example is relevant to you. To test, simply ask your engineering team to provide you with a model of the system. If the result is a manual hand written or powerpoint diagram (such as figure 3) then ask for a comparison to the live version.
+
+== Why not just use an AI to solve this?
+
+When most CIOs in 2025 talk about AI, they usually mean a specific set of transformer architectures such as LLMs (large language models) and LMMs (large multi-modal models) that are commonly found in code co-pilots. Whilst there is nothing wrong with using such models to assist in the effort (and the authors both do), as of December 2024 marketing research campaigns claim that copilots can help developers write up to x1.55 (55%) faster. It should be remembered that these are marketing research and are often challenged by independent research which claims figures as low as x1.05 (5%). +
+
+Typically, using a model-centric approach as described here, we see improvements of orders of magnitude. For example, the case above showed 600x (60,000%) improvement. It is often difficult to quantify the difference because it is rare to have a baseline to compare against. Even where data exists, we are often not comparing like for like i.e. you have one group which has failed to find an answer or given up versus one where the answer is found. Furthermore, larger opportunity costs to the business due to delays are rarely factored into the equation. Despite the huge changes, it’s not possible to discount the influence of luck, the skill of the engineers or the bias of the authors due to the small sample sizes. +
+
+As a result, we are not in a position to quantify the impact of a more moldable approach and instead must rely on our experience of orders of magnitude. However, the two approaches — use of AI models and Moldable Development — are not in opposition and can complement each other. We discuss how, later in this book. +
+
+Throughout this chapter we have discussed the role of questions and answers. In the next part of our journey we explore this in more detail and why it matters.
+
+== What did we learn?
+
+Software engineering can be seen as primarily a decision-making activity about continuously changing systems. The process involves assessing problems, exploring systems, having conversations, synthesizing information, and utilizing development experience. +
+
+Current practices often rely on gut feelings and ad-hoc exploration using manual, data-centric approaches. Furthermore, traditional software development tools are often monolithic and constraining, leading to manual inspection. +
+
+Moldable Development offers an alternative that relies on generating live views of the system. These are obtained through contextual micro tools that are created specifically for each problem. +
+
+We provided a real-world example of how Moldable Development was applied to optimize a data pipeline that had previously resisted improvement. In the case study, it took approximately 2 person-months to unlock a problem that had previously consumed hundreds of person-years without success. While the exact quantification of improvement is challenging, experience suggests that Moldable Development can lead to orders of magnitude improvement in problem-solving in software engineering.
+
+== Homework exercise: level setting
+
+Gather a group of your software engineering colleagues and discuss the following questions:
+
+. Do we agree that we spend more than 50% of the engineering time on trying to learn about the system by reading through various artifacts?
+. When was the last time we talked about how we read code? Specifically, about how we do the reading, not about the code we read.
+. Do we have models of our system that allow us to investigate performance issues programmatically? What about security concerns? Or business domain events?
+. How do we obtain our architecture diagrams? Are they manually created, or do we generate them out of the system’s sources? How confident are we that the diagrams we use represent the system accurately? How would we verify this?
