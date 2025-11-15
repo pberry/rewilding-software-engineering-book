@@ -2,7 +2,7 @@
 Tudor Girba and Simon Wardley
 2025-02-06
 :updated: 2025-05-22
-:front-cover-image: image:cover.png[Front Cover,1050,1600]
+:front-cover-image: image:4973028423_70f7671449_o.jpg[Front Cover]
 :doctype: book
 :producer: Asciidoctor
 :copyright: CC-BY-SA 4.0
@@ -15,7 +15,7 @@ ifndef::imagesdir[:imagesdir: images]
 
 ifndef::ebook-format[:leveloffset: 1]
 
-
+include::publication-note.adoc[]
 include::chapter-1-introduction.adoc[]
 include::chapter-2-how-we-make-decisions.adoc[]
 include::chapter-3-questions-and-answers.adoc[]
