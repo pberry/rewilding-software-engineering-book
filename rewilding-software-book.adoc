@@ -2,7 +2,7 @@
 Tudor Girba and Simon Wardley
 2025-02-06
 :updated: 2025-05-22
-:front-cover-image: image:4973028423_70f7671449_o.jpg[Front Cover,pdfwidth=80%,align=center]
+:title-logo-image: image:4973028423_70f7671449_o.jpg[Front Cover,pdfwidth=80%,align=center]
 :doctype: book
 :producer: Asciidoctor
 :copyright: CC-BY-SA 4.0
@@ -12,6 +12,17 @@ Tudor Girba and Simon Wardley
 :showcomments:
 ifndef::imagesdir[:imagesdir: images]
 :toc:
+:toc-title: Table of Contents
+:toclevels: 2
+:title-page:
+
+
+:version-label: Version
+:pdf-theme: custom-theme.yml
+:pdf-themesdir: .
+:source-highlighter: rouge
+:rouge-style: github
+:icons: font
 
 ifndef::ebook-format[:leveloffset: 1]
 
