@@ -2,7 +2,7 @@
 Tudor Girba and Simon Wardley
 2025-02-06
 :updated: 2025-05-22
-:front-cover-image: image:4973028423_70f7671449_o.jpg[Front Cover]
+:front-cover-image: image:4973028423_70f7671449_o.jpg[Front Cover,pdfwidth=80%,align=center]
 :doctype: book
 :producer: Asciidoctor
 :copyright: CC-BY-SA 4.0

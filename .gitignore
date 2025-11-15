@@ -1,6 +1,8 @@
 output/*
 .DS_Store
+.claude
 *.epub
 *.html
 *.mobi
 *.pdf
+CLAUDE.md
