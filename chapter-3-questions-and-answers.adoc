@@ -16,14 +16,14 @@ image::3-8_chJpRleGjZ0W4gdv.png[Figure 8: Adjusted high level architectural diag
 Unfolding that loop leads to the scientific method, as shown in Figure 9. Being a loop we can start from anywhere. Often, when applying the scientific method in an empirical situation, the start is an observation that results from exploration. In other cases, the start is an explicit hypothesis. Regardless of where we start, the loop typically follows the steps from Figure 9. +
 
 .High level loop of decision making.
-[img-fig9-loop]
+[#img-fig9-loop]
 [caption="Figure 9: "]
 image::3-9_7iMzqfqdLvvjWy1u.png[Figure 9: High level loop of decision making.,align=center]
 
 Our ability to make decisions is governed by the speed at which we move around the loop i.e. the flow of decision making. This has two major components, the time to ask a question (ttQ) and the time to answer (ttA) a question, as depictured in Figure 10. +
 
 .the flow of decision making.
-[img-fig10-flow]
+[#img-fig10-flow]
 [caption="Figure 10: "]
 image::3-10_al6pCvStr8nZVzlc.png[Figure 10: the flow of decision making.,align=center]
 
@@ -40,7 +40,7 @@ Another example of synthetization of tools can be seen in the space of observabi
 We’ve added this tool synthetization to our diagram (see figure 11.)
 
 .moldable development and the flow of decision making.
-[img-fig11-modable-development]
+[#img-fig11-moldable-development]
 [caption="Figure 11: "]
 image::3-11_8XeVE7zFGN9rs01n.png[Figure 11: moldable development and the flow of decision making.,align=center]
 
@@ -49,7 +49,7 @@ While testing and observability are important, they focus primarily on the funct
 The same Moldable Development cycle can also be visualised on our Wardley Map as seen in Figure 12, in which we linked hypotheses to Moldable Development and the synthesization of composable micro tools. +
 
 .moldable development and the flow of decision making on the map.
-[img-fig12-map]
+[#img-fig12-map]
 [caption="Figure 12: "]
 image::3-12_ryCfFPygdEErHRdc.png[Figure 12: moldable development and the flow of decision making on the map.,align=center]
 
@@ -58,7 +58,7 @@ Given that our map and our flow diagram are equivalent, we can now import the co
 So, the top of the map is about questions, the bottom of the map is about answers as shown in figure 13. +
 
 .moldable development and the flow of decision making on the map.
-[img-fig12-map2]
+[#img-fig13-map-questions-answers]
 [caption="Figure 13: "]
 image::3-13_5YOU8cSWb9JUn4hwcfN5NA.png[Figure 13: moldable development and the flow of decision making on the map.,align=center]
 
@@ -87,7 +87,7 @@ Along with being actionable and specific, a question also needs to be timely. Th
 For decision making, an answer has to be accurate, explainable and representative and a question has to be actionable, specific and timely. We’ve added this to figure 14. +
 
 .on the characteristics of questions and answers.
-[img-fig14-characteristics]
+[#img-fig14-characteristics]
 [caption="Figure 14: "]
 image::3-14_2uvRck5JTv7B1hOxTYAkUA.png[Figure 14: on the characteristics of questions and answers.,align=center]
 
@@ -104,21 +104,21 @@ In fact, it was “Why are our services slow?”. This was then refined to “Is
 Whilst the first question was what the client wanted to know, the latter question was akin to “What does the system look like?” Let’s depict these succession of questions in another Wardley Map (figure 15). The blue “?” represents answers we do not know or have any information for. The red texts are the questions. +
 
 .Data pipeline: initial questions.
-[img-fig15-pipeline-initial-questions]
+[#img-fig15-pipeline-initial-questions]
 [caption="Figure 15: "]
 image::3-15_CDeYuw8pPzbuii6r.png[Figure 15: Data pipeline: initial questions.,align=center]
 
 The answer to that latter question was given by the client in figure 3 — the erroneous network diagram with the missing external component. As no model of the network existed, the diagram was created by hand and based on crude beliefs. However, a network diagram should be derivable from the traffic which flows across the network. For all its faults, the network diagram led to a question of “How is one attribute traversing the data pipeline?” as shown in figure 16. +
 
 .Data pipeline: Answers leading to more Questions.
-[img-fig16-pipeline-answers-more-questions]
+[#img-fig16-pipeline-answers-more-questions]
 [caption="Figure 16: "]
 image::3-16_FZTqHBeBBZCwxT8p.png[Figure 16: Data pipeline: Answers leading to more Questions.,align=center]
 
 In order to answer that the client was forced to use highly manual processes taking person-weeks for a single variable in a system which had tens of thousands. This was the first question for which a tool was built, to visualise the flow of an attribute across the network but to repeat this process tens of thousands of times. The output was a highly modelled and automated visualisation of flow, essentially transforming the answer into a commodity as depicted in figure 17. +
 
 .Data pipeline:Moving from manual to a highly modelled and automated response.
-[img-fig17-manual-to-modelled]
+[#img-fig17-manual-to-modelled]
 [caption="Figure 17: "]
 image::3-17_HRXzz9hsjcaooKiC.png[Figure 17: Data pipeline: Moving from manual to a highly modelled and automated response.,align=center]
 
@@ -127,14 +127,14 @@ The moving of an answer from left to right on the map through the creation of a 
 This pattern can be repeated all the way up our chain of questions and answers until we reach an automated way of generating the answer to the top question: “Why are our services slow?”. +
 
 .Industrialising one answer enables industrialisation of higher order answers.
-[img-fig18-answer-enable-questions]
+[#img-fig18-answer-enable-questions]
 [caption="Figure 18: "]
 image::3-18_QCtB36gwlnLdvkve.png[Figure 18: Industrialising one answer enables industrialisation of higher order answers.,align=center]
 
 In practice, what happens is the industrialisation of answers enables new questions that we had not previously thought of. A similar effect can be seen in modern research lab automation. For example, once we had a complete overview of the pipeline, the team wanted to refine their question. It turned out that the pipeline supported multiple marketing campaigns, but some of those were less important or even not active anymore. So, instead of looking at the entire data space, they wanted to narrow it down to only the last major campaign. This led to a new question of “What data is used only in a specific campaign?” as in figure 19. +
 
 .Uncovering new questions (the adjacent unexplored).
-[img-fig19-new-questions]
+[#img-fig19-new-questions]
 [caption="Figure 19: "]
 image::3-19-8cyad2JQl7oVy9KU.png[Figure 19: Uncovering new questions (the adjacent unexplored).,align=center]
 

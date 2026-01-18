@@ -1,0 +1,461 @@
+= Chapter 6: Myths we tell ourselves
+
+== Myths we tell ourselves
+
+Software is a domain of mostly invisible knowledge work. It’s hard to see progress, quality or risks in the way that you can with building bridges or running a factory. In that vacuum, simple narratives often fill the gap. As Alan Kay said “computing has turned into a pop culture” and many of its most popular stories have become myths … “the 10x engineer”, “the genius founder”, “move fast and break things!”. In this chapter, we wish to explore specific myths focused on software engineering itself.
+
+== Myth 1: Software engineering is about building functionality
+
+When we talk about building functionality, we mean writing code with the goal of transforming an input into an output that conforms to some specification. In chapter 4, we described how seven teams were tasked with producing a calendar application. Whilst their output was functionally equivalent, the internals were quite different. This is illustrated in figure 50, which visualizes the structure of each system in terms of code entities and their relationships.
+
+.Seven examples of a calendar application
+[#img-fig50-calendar-examples]
+[caption="Figure 50: "]
+image::6-50_yTqVWIr076HsI1b2fXCbyQ.png[Seven examples of a calendar application,width=100%,align=center]
+
+The experiment shows that when we constrain functionality (through specification and tests) without constraining structure then this can lead to functionally equivalent but structurally diverse solutions. In other words, the structure can evolve independently of the functionality. 
+
+But why does structure matter? Isn’t it enough for a system to meet the required functionality? The short answer is that it is until it isn’t. The longer answer requires us to understand a little about evolution. 
+
+Our systems are built within a context, an economic and technological landscape. That landscape might appear to be static at a single point in time, but in practice it is constantly evolving. Take how our supermarkets have used bar codes to automate away the manual process of cashiers reading price labels that were stuck on products with label guns. The other technological systems (such as inventory or accounting) that the supermarkets used had to accommodate this new concept. The ability of a system to adapt to a change depends upon the structure of the existing system and not its existing functionality. 
+
+To demonstrate this point, let us return to our seven calendar applications. Let us suppose some unpredictable event (as bizarre as barcodes would have seemed in the 1950s) has happened to the environment and the weekly calendar now includes ten days (as happened in the French Revolution, 1793 to 1805). This would require a change to those systems. The difficulty in changing them would not depend upon the existing functionality (which they all fulfill) nor the new functionality (which they all would have to comply with). It will depend upon the existing structure that has been built into each. In some cases, the change might be trivial to implement. In other cases it would involve large structural changes. 
+
+Rather than changing the number of days in the week, let us pick something more commonplace such as splitting our monolith calendar application into two parts so that you can scale them differently. Such an activity depends almost exclusively on the structure of the system. Consider the case in which we are in team A which is working on the system depicted at the bottom-right of our visualization (figure 51). Cutting it in the middle crosses only a few dependencies. The situation for team B (top-left) looks radically different: cutting in the middle crosses many more dependencies of the system.
+
+
+.Splitting two systems
+[#img-fig51-splitting-systems]
+[caption="Figure 51: "]
+image::6-51_AAaUXgR1q_XKeT_iIHl9og.png[Splitting two systems,width=100%,align=center]
+
+In summary, software engineering is more than just functionality, it also includes structure. Some structures facilitate the creation of new functionality better than others. 
+
+This is why concepts like refactoring (or restructuring, in general) are important. Avoidance of refactoring inevitably leads to systems that are out of date with their landscape and difficult to change. These we tend to call “legacy” which is just another way of saying that we have a structure that is stuck in the past which makes it difficult for us to change. 
+
+To solve the legacy problem we have to invest in refactoring. Unfortunately, such activity tends to be costly because we not only have to rewrite the structure, we first have to understand it. To make matters worse, this cost rises over time especially if new teams unfamiliar with the system are brought in and start their journey by reading code. To compound this further, there is often pressure to spend resources on adding new functionality rather than dealing with the structure. As a consequence of this, dealing with the structure is often left until the legacy problem is upon us. At which point, the high cost of changing a software system’s structure can be observed in the large number of failed modernizations. 
+
+To solve this problem, we need to somehow make refactoring inexpensive. In the digital world, the structure, the functionality, the tools and even the environment itself are constructed from code. We can therefore apply the concept of automation to refactoring. 
+
+This does occur but in most environments automatic refactorings only work on a small scale e.g., changing the name of a variable or moving a method. In 2010, Brant & Roberts et al showed that automatic transformation could work at a large scale with a case study of migrating a system of 1.5M lines of Delphi code into C# . Their work shows that large transformations can be achieved systematically through many micro automatic transformations that can be developed almost independently. We expand on these ideas later, but for now it is enough to note that software engineering is more than building and includes refactoring, and it is more than functionality and includes structure.
+
+== Myth 2: Refactoring is not a business problem
+
+Most systems that support human processes and decision making have replaced what once happened manually. That human work used to be called knowledge work. It is, therefore, suitable to describe systems by the knowledge they encode and how they encode it. 
+
+The system’s functionality represents what the system accomplishes as a result of this encoded knowledge. The system’s structure represents that encoded knowledge in terms of the mechanics of how things are transformed. Some structures facilitate change better than others.
+
+So what? 
+
+In the past, the core knowledge of an organization was contained in the heads of people and in the processes they followed. The knowledge management movement made the importance of processes more prominent. The idea was that new value can be created by exploiting the existing knowledge either by streamlining work or by combining it in new ways. Today, much of this core knowledge is inside of the structure of software systems. It is not in documents, it is not in people’s minds, it is inside the systems. That knowledge is still critical to organizations, and both streamlining and recombining are sources of value creation. 
+
+The importance of understanding the inside of systems can be observed in what engineers do. Most spend their energy not on writing code but in figuring out the knowledge encoded in the system to learn why, what and how to change things. 
+
+Let us demonstrate this with an example. At the height of the 2020 pandemic, a large national retailer (with annual revenues in excess of $10bn) decided it was strategically important to strengthen their online offering. At the core of their ecosystem, they had an old database containing customer information to which different applications were connected for read and write purposes. They wanted to have a more granular customer model and to migrate the database to a system that could be accessed via an API.
+
+The project was defined and a significant team with resources were added. Their initial approach to deal with this had been to ask application teams about their needs. They then asked a couple of those teams to start isolating the calls to the database through a thin microservices layer (this is known as the strangler pattern). That seemed to work well at first, but six months into the project, they realized they still did not know which surrounding systems were using the database, let alone what changes should be performed. 
+
+In other words, half a year into a key strategic initiative they still did not have the first order information about the problem space. The knowledge was somewhere in their technology ecosystem, but they lacked the ability to decode it. They turned to outside expertise and brought in a team to help with that decoding. This is where things went from bad to worse. 
+
+To reason about the encoded knowledge within a system, you need access to the code. When asked for the code sources of the potential systems it turned out that they did not even know where the code for most of the systems was. The only known piece was the database itself and the few new microservices that were intended to wrap the database. You might find this surprising given the size of the company, alas, it’s all too common. 
+
+They could depict the situation in a diagram as seen on the left hand-side of figure 52: a central database (red) with systems (black) that were accessing it either directly or through services (blue). That was good enough to start from. The sysadmins then instrumented both the database and the microservices for a day (which was their typical business cycle) to gather fine grained logs. The logs contained all the queries over the database and the services, including the IP address of the machine performing the call. The logs were analyzed through multiple contextual tools that sliced and diced the information and later linked it with other sources of data. The automatic overview of the system is shown on the right.
+
+.Manual depiction of what people believe the system was vs what the system actually was
+[#img-fig52-manual-vs-actual]
+[caption="Figure 52: "]
+image::6-52_E-jcoE7OuugjYrQiegsCcw.png[Manual depiction of what people believe the system was vs what the system actually was,width=100%,align=center]
+
+This view (one of many created) shows in red the tables from the database, in blue the services and in black the systems. From here they could identify that not all systems have the same needs. For example, while some systems used tables in isolation, others relied on common tables. Thus the picture informed not only which systems have to change, but also provided input into how the work should be organized: which teams can continue working independently, and which should coordinate. 
+
+It’s worth taking a moment to look at the figure. The company had spent six months trying to understand what it had and despite all this effort, the left hand side was the best representation that they could provide. On the right hand side is what the actual system was and it took two people and one month to produce. 
+
+The challenge with this refactoring wasn’t in writing code, it was in understanding the encoded knowledge. That knowledge was in the system, not in people’s heads or in documentation. Tools were needed to unearth it but those tools had to be contextual to the system being examined. 
+
+Without this decoding, the organization could not execute at the business level. Hence whilst it might be commonplace to think of software refactoring as a technical activity about rewriting code, it often turns out to be a business activity about reshaping encoded knowledge.
+
+== Myth 3: Software engineering is an engineering practice
+
+Software engineering should be an engineering discipline. But, most of it is still a craft. We should learn from the parts that are more evolved. Let us examine two major parts: development and testing. Let us start with testing. 
+
+There used to be a time when the decision to release a system undertook an elaborate process involving quality gates, manual attempts at regression testing and quality managers. People would define what quality means, other people would create checklists and then manually go through these. At the end, a report would be compiled with the results and someone would decide whether to release or not. The decision of whether the system fulfills the desired goal was long, laborious, and often wrong. 
+
+Granted, not all testing was manual. People aimed to automate the process with systems like SIMMON as early as the 1960s. In the same way how the price labeling in supermarkets has changed through automation, such a system removed the manual effort from the tedious part of testing. It was only much later that Kent Beck and Ward Cunningham realized we don’t have to wait until the end of the project before testing it, we could automate testing throughout the construction of the project. This eventually culminated in the ideas of test driven development (TDD) where we built the test for a system prior to writing the code that passed the test. This was a remarkable evolution. 
+
+Let's explore it in more detail by looking at the topic through our map of decision making (our first wolf), and follow the path for testing. We begin with a hypothesis that the system lacks a feature and we build a test to check for this. That test is part of a systematic mechanism of exploring the space using a model created by the tests. If you've ever heard someone say "the best specification is the test suite" then this is what they mean, the tests model the system. The output (information) of those tests are traffic lights synthetized from specific coding. The overall experience is provided by the test suite which is composed of thousands of micro tests. When approached in this way, software testing is very firmly an engineering practice (see figure 53).
+
+
+.Testing as an engineering discipline
+[#img-fig53-testing-engineering]
+[caption="Figure 53: "]
+image::6-53_dwRtfscOq5cI1PAweAIocQ.png[Testing as an engineering discipline,width=100%,align=center]
+
+Let us summarize the changes in testing. In the early days of the industry, testing used to favor a gut feel driven approach. Traditional development handed code to testers who lacked system understanding and had to guess how things worked. Test-driven development (TDD) transformed testing from guesswork into an engineering discipline by embedding understanding directly into test suites which were made out of thousands of small, contextual tests that captured the system model and domain knowledge. TDD is more than just a testing technique, it’s a way of designing. But there is still more to this picture that’s worth understanding.
+
+TDD sees the system in terms of functionality, inputs and outputs. As we’ve seen in myth 1, this point of view misses structure. To show this, let us examine the red-green-refactor cycle of TDD in more detail. The first step (red) is to write the test to show what needs to be done. This works great when we start with a known wish about the system that we can transform into a setup and an assertion. However, there are situations in which this is not possible because we do not know what a good assertion can be. For example, when we have to make sense of some data that we’ve never seen before, we cannot formulate a meaningful hypothesis upfront. We have to explore the data first. Similarly, green (implementation) is fine but how do we know what to implement? And what about the refactor step? How do we know what and how to refactor, and more importantly, how do we know when to stop? It’s not enough to guide the system through tests, you need to see the system as well. All of these questions lead us into development. 
+
+The limits of TDD don’t mean that development can’t learn from TDD. What might be less obvious to the reader is that those small tests used in TDD are in fact highly contextual tools i.e. they have inputs and outputs and they are applied to a specific problem (the test scenario). Every question about a system boils down to retrieving information from it. To decrease the time to answer, we need tools. But as software systems are highly contextual (an electronic healthcare record system is not the same as an online gambling site), surely we need our tools to be contextual, too. This leads to a question: What happens if we apply testing’s solution of using contextual tools to all development problems? 
+
+To answer that question, we need to look at how development is actually done today. Let us assume our organisation uses TDD (and sadly, that's not everyone, for many testing is still a craft), once we run our tests and see it fails we switch to development in order to fix the problem. For most that means grabbing our monolithic coding environment (which we use for every problem), we inspect the code (often through reading) and we manually gather information to explain the problem (from architectural diagrams to logs). We like this because we want to be "data centric" but then most of those diagrams are actually statements of belief rather than fact. Our exploration is somewhat ad-hoc until we reach a point that our gut tells us that this is the right solution. We try it, we run the test again. For most, software development is very much in the craft phase (see figure 54).
+
+
+.Development as a craft
+[#img-fig54-development-craft]
+[caption="Figure 54: "]
+image::6-54_e_tQncs0xKypG43vuz9SMQ.png[Development as a craft,width=100%,align=center]
+
+If we want to change software development into an engineering practice then we have to follow that journey of testing. We have to start at the bottom of the map, with the foundations — the development experience. Tests are small tools built for our context. For software development, our experience should also mimic this with thousands of small tools molded to fit our problem. This allows us to climb the value chain all the way up to being hypothesis driven. This is the only path for development to become an engineering subject and it’s why it is our second wolf. 
+
+It’s worth reiterating once again what our two wolves are: 
+
+*Wolf 1*: Challenging the way we view software engineering and demonstrating that it is primarily a decision making process. 
+
+*Wolf 2*: Challenging the way in which we ask and answer questions and demonstrating that we need contextual tools. 
+
+Alas, tool vendors are trying to sell us the same tools everywhere with an added sheen of LLMs under the argument that AI is better at software creation than most people are. Well, in cases that might be true if we limit software development to a craft and never turn it into an engineering practice and optimize it. When we’ve seen groups take software development from a craft to an engineering practice (by abandoning those monolithic tools, even the ones with added LLMs) then we’ve seen performance increases of orders of magnitude and not the paltry benefits claimed by AI vendors. 
+
+Of course, this isn’t an exclusive choice though. Development becomes even faster when you start to use LLMs to build those contextual tools for you. By understanding both of our wolves this new path becomes possible.
+
+== Myth 4: LLMs will replace software engineers
+
+We could talk about the endless prognostications of the great and good about how software engineers will disappear through vibe coding, but Simon has already covered the usual sort of myths in his medium posts from January 2023. Frankly, after two and a half years of this nonsense, both of us are bored rigid with it. However, for completeness, we will just repeat some of them here and move onto the more interesting topic. 
+
+. You'll need less engineers. Nope. See Jevon's paradox. You'll need to retrain to a new world but you'll end up doing more stuff.
+. It'll reduce IT budgets. Nope. See Jevon's paradox again. You'll end up doing more stuff, more cost efficiently.
+. You have a choice. Nope. See Red Queen Effect. This is only a question of "when" not "if".
+
+Now we are done with the dull, let us talk about a more interesting path which also appears in Simon's article, the link between LLM and software engineering.
+
+[start=4]
+. I can make a more efficient application by hand crafting the code. Nope. Well, technically you can but the time taken to hand craft it all will be vast compared to the speed at which competitors will move. I'd also suggest reading into Centaur Chess if you think even the most gifted engineer will outcompete an average engineer with an average AI. 
+
+
+Rather than rushing to get rid of software engineers, try instead getting rid of standard tools (even those with added LLMs) and focus on using LLMs to help compose your development experience out of thousands of micro tools just like testing. In the same way we have a test suite that is designed for a specific problem with small tests, we should have a tool suite for our application built out of micro tools.
+
+By using LLMs in this way, we simultaneously turn development into an engineering subject and gain the benefits of LLMs in two areas where they are strong — creation of hypotheses and creation of specific coding for contextual tools (see figure 55).
+
+.Development as an engineering discipline
+[#img-fig55-development-engineering]
+[caption="Figure 55: "]
+image::6-55_N3E61Fj-3HrM7aEc8yUK1Q.png[Development as an engineering discipline,width=100%,align=center]
+
+Those are fancy words but a practical example of this way forward would be better. So, let us start by using LLM to analyze the Glamorous Toolkit. Trying to understand a system is a common problem faced by every developer when looking at a legacy environment. 
+
+We ask the LLM to provide us with a list of components and relationships. We give it the context of the code base, and we provide it with tools to search and retrieve code. We ensure that it knows about the specifics of how dependencies are defined. And we nudge the LLM to traverse the dependencies recursively and produce a systematic output in the form of the name of the component and its direct dependencies. 
+
+----
+
+Find all components and their direct dependencies from Glamorous Toolkit.
+
+For this you should:
+
+- Traverse all dependencies recursively to identify all components starting from the root one.
+- Provide the result concisely in the form of an array.
+- An item in the resulting array is made out of an association between a key in the form of the name of a component, and the value made of an array with the names of only the component's direct dependencies.
+- List all referred projects regardless of whether they are considered internal or external.
+- Not list the recursive dependencies.
+- Not list dependencies to packages as they are internal to projects.
+
+The result should look as below:
+
+```
+{
+'ComponentA' -> { 'ComponentB' . 'ComponentC' }.
+'ComponentB' -> { 'ComponentE' }
+}
+```
+
+----
+
+To make the experiment as representative as possible, we picked a problem for which the LLM would have to explore the system whilst still relying upon prior knowledge for how dependencies are declared. We needed to test this because if the LLM didn’t know about how dependencies are declared then that would have introduced a confounding variable to the experiment. 
+
+We validated this setup by not telling it where or how to find the dependencies. The plan produced by the LLM confirmed that it did know those details: 
+
+----
+
+Plan to build the dependency map:
+- Find GT root baselines: search for classes named BaselineOf* that include 'GToolkit' or 'GlamorousToolkit'.
+- For each root baseline, extract direct dependencies from its #baseline: method (look for spec baseline:/project: entries).
+- Resolve each dependency to a local BaselineOf* class when present; keep the name string otherwise.
+- Traverse recursively to discover all reachable components, but record only direct dependencies per component.
+- Output a sorted array of associations: 'Component' -> { 'DirectDep1' . 'DirectDep2' }.
+
+Proceed?
+
+----
+
+And then it produced a result with 154 components and 243 dependencies. It did so by querying and traversing the code as described in the plan. Quite impressive. 
+
+Of course, we do not need the LLM to answer such questions in the Glamorous Toolkit because we already have deterministic contextual tools that provide accurate answers. So, what's the difference between the LLM answer and the one coming from our contextual tools? That's a task for another tool and the result is figure 56 which shows a graph of components and their dependencies in which:
+
+* the components and dependencies that both occur in the system and were correctly detected by the LLM appear in black;
+* the components and dependencies that were missed by the LLM are colored in red.
+
+.A visualization of the Glamorous Toolkit components and their dependencies
+[#img-fig56-gt-components]
+[caption="Figure 56: "]
+image::6-56_PH7hQTma104yN-sS3o5x6A.png[A visualization of the Glamorous Toolkit components and their dependencies,width=100%,align=center]
+
+The experiment shows us that the approach of using an LLM to understand a system, whilst convincing, fails. The result misses components, misses relationships and even shows relationships that do not exist. This is inevitable with any statistically based engine, particularly as the scale of the problem increases. What you need to remember is LLMs are not truth engines but coherence engines. They do not give you “what is” but “what is likely and sounds coherent”. 
+
+Armed with the results, we went ahead and tweaked the prompt in the hope that we could get the LLM to be more accurate. And in some cases it worked better. The emphasis here is on _some_. 
+
+Given a medium system with 1.6 million lines of code, 194 core components and 396 direct dependencies, the error rate of the LLM is roughly 5% to 30% of the components and dependencies missing along with components hallucinated. The problem is not so much the actual error rate (let us say 10% for example) but that you don’t know what 10% is wrong unless you have contextual tools (which most systems don’t) and if you had contextual tools then you’d simply run the tool. The only way to verify the LLM results in environments that lack contextual tools is through manual inspection which never happens because it is the very problem people are trying to circumvent. Even if it does happen, it is highly likely that significant errors will slip through any manual inspection. 
+
+It’s just not the error rate that is shocking, it’s also the cost associated with it. Once the contextual tool is created the cost to discover what the architecture is, what components are used and what relationships exist is barely measurable and constantly repeatable, capturing any and all modifications. The running of an LLM was orders of magnitude slower, more expensive (even at today’s highly subsidized prices) and humongously more error prone. 
+
+The LLM will give you an output that looks like an answer, it will do this more quickly than you can read the code but what it provides should not be used in an engineering context — it will lack those essential three characteristics of being representative, accurate or even explainable. Relying on this becomes a matter of faith. 
+
+The way to positively overcome the limitation of LLMs and not rely on blind faith, is to use the LLM to help generate the specific coding (the tool) that will provide the information we seek. This is our “way forward”. In this part of the example, we show you how to do this. 
+
+We start with our original prompt but change the first paragraph so that rather than giving us the answer directly, it gives us a snippet of code (a tool) to do this: 
+
+----
+
+Produce a snippet that recovers all components and their direct dependencies from Glamorous Toolkit. The code should:
+- Traverse all dependencies recursively to identify all components starting from the root one.
+- Provide the result concisely in the form of an array.
+- An item in the resulting array is made out of an association between a key in the form of the name of a component, and the value made of an array with the names of only the component's direct dependencies.
+- List all referred projects regardless of whether they are considered internal or external.
+- Not list the recursive dependencies.
+- Not list dependencies to packages as they are internal to projects.
+
+The result should look as below:
+
+```
+{
+'ComponentA' -> { 'ComponentB' . 'ComponentC' }.
+'ComponentB' -> { 'ComponentE' }
+}
+```
+
+----
+
+With this simple change, instead of getting data, we now get code that’s meant to retrieve it. In our case, the LLM produced the following snippet: 
+
+----
+
+"Collect all GToolkit components and their direct dependencies"
+| repo builder rootProject allProjects |
+repo := 'github://feenkcom/gtoolkit:main/src'.
+builder := GtRlDependenciesModelBuilder new.
+rootProject := builder
+buildProjectFromBaselineClass: BaselineOfGToolkit
+withRepositoryDescription: repo.
+allProjects := rootProject withAllChildProjects.
+allProjects collect: [ :project |
+project name -> ((project projectReferences collect: [ :ref | ref
+referencedProject name ]) asArray) ]
+
+----
+
+Executing the code produced the correct answer. It worked on the first and subsequent tries. You still need to review the code of the snippet itself, however, reviewing ten lines of coding in a tool is less daunting than manually finding and inspecting 194 component descriptions hidden inside a 1.6 million lines of code system. This works particularly well because we are facing a shallow problem. 
+
+The obvious counter from AI purists is to point out that we can use one agent to create a tool and another agent to understand. That’s fine but then you’re eliminating any human path to understanding and you are delegating the decision to the agent. This is a question of architecture.
+
+== Myth 5: Architects make decisions
+
+In the previous myth, we showed a practical example of using micro tools with LLMs to expose the architecture of Glamorous Toolkit. We want you to take a good look at figure 52. Does that look like any normal architectural diagram that you’ve seen before? 
+
+In the world of moldable development, architectural diagrams that are generated out of the system itself are the norm. But they don’t look like diagrams you commonly see on whiteboards or powerpoint slides that aim to describe the existing systems. This is because those traditional diagrams are statements of belief i.e. what we would like the architecture of the current system to be and not what the architecture is. 
+
+Whatever you might prefer to understand by architecture, the only architecture that matters in software is the one that gets in the code. Thus the only architects that matter in the end are those that affect the code. Everyone else are wishful thinkers and potential influencers. It’s not architects that make decisions but the developer writing the code. 
+
+When the architecture is an emerging property, evolving it involves three activities:
+
+. Know where you are
+. Choose where to go
+. Ensure you go there
+
+Of these, only the second involves design. The first and the third are assessment activities and they require visibility into the system (see figure 57).
+
+.Navigating the architectural space
+[#img-fig57-architectural-navigation]
+[caption="Figure 57: "]
+image::6-57_J1dq1gsnjOCgjuBy4XTVag.png[Navigating the architectural space,width=100%,align=center]
+
+The lack of vision into the system can lead to a difficult situation where a coder leaves the organization and a critical system is neither understood nor any documentation is accurate. Without the ability to generate the architectural diagrams from the system then the response by later developers is normally one of fear, not wanting to change or break anything in a system which is poorly understood but critical. 
+
+It is little wonder that there is a new lucrative market of vendors promising tools to understand your legacy through the use of LLMs. Their narrative exploits this fear but hopefully we have shown you in the practical example why their promises will rarely be met and that there exists a better alternative.
+
+=== But can’t we just use agents? I write an architectural diagram, one agent codes it, another checks that it has been coded correctly?
+
+Agents, being LLMs, have the same problems of hallucination and interpretation of your prompts. However, this is little different to human agents and at least in agentic swarms we are adding a process similar to building control that is found in physical architecture i.e. checking the code matches the diagram. In a sense by layering on multiple layers of agents you can clearly make an improvement in ensuring the code matches the architectural diagram. But, this is all wasted effort if you can simply get the system to generate its own architectural visualization to detect the delta between what is wished and what exists.
+
+=== But I could use a specification and get swarms of agents to build that?
+
+In the past, we fed programs into computers using things like punched cards, and on small micros you could even work directly in machine code or assembly. Take the once popular ZX80 which had Z80 chipset machine code and even higher level assemblers. These are languages close to the machine with hexadecimal commands such as 3E 2A (machine code) which means LD A, 42 (assembly) which means load register A with the number 42 (English enough for a technical person). Of course, if you were lucky enough to own a ZX80 then you used BASIC. You would type PRINT “HELLO” rather than “21 07 42 CD 0C 07 C9 2D 2A 31 31 34 01” (assuming a 4K RAM, rather than the 8K RAM with the ZX81, don’t ask). 
+
+We won’t continue with the metaphor, as it is giving both of us micro flashbacks to a time of fiddling with cassette tapes, listening for errors, wobbly RAM packs and typing in long strings of characters. It’s enough to say that the PRINT “HELLO” was more understandable. 
+
+The move to higher level languages, even a basic one like BASIC, made it possible to express ideas closer to how humans think and can better understand. These languages are executed on a machine, so the code eventually has to be translated to machine code. As that translation happens automatically with semantics guaranteed to be preserved, we no longer have to look at it, if we do not explicitly want to. 
+
+LLMs generate code, too. We can prompt “write a ZX80 program that prints hello” and the LLM readily produces PRINT “HELLO”. So, people concluded that we are facing a similar transition to a higher level of abstraction as we did when we moved from assembly to programming languages. Except that sometimes, our prompt produces PRINT AT 0,0;”HELLO” which looks similar but that clears the screen before printing. It’s not a large difference, but it is certainly not the same meaning. 
+
+What matters in this trivial example is that the semantics are not preserved. Unlike our translation from BASIC to machine language which always provides the same semantics (it is deterministic), the translation from prompt to machine language is not. 
+
+So, what does this mean in our current fad for specification driven development? It’s a bit like the calendar example above, yes you get an answer but the LLM could be acting like any one of those teams. You cannot guarantee that the semantics will be the same from one prompt to another. But isn’t that how real life is like? Yes, you don’t know what the team produces until you read the code in order to discover what decisions have actually been made. The specification alone is not enough. Unlike the translation from assembler to machine code, the translation from prompt to machine code moves the “developer” further away from the decision making in a material way. 
+
+Part of the problem, and why specification driven development sounds so seductive, comes from a misunderstanding of how we actually program things. The idea seems straightforward enough, in the physical world an architect creates a blueprint for a building and then the builder builds it. Following the construction metaphor in software engineering, the software architect creates a blueprint for the problem (the specification) and the engineer builds it! Almost, but not quite. Whilst we live in houses, we don’t live in the code that the engineer builds as there is a missing step. The computer translates the code and then runs the translation to provide the application. The code the developer produces is actually the blueprint. What we call software architecture (i.e. specification) is closer to a retail investors wishlist for new housing investment. Going from a retail investors wishlist to blueprints of the houses to be built takes a lot of decisions and those decisions are what code actually is. 
+
+This is not to say specification driven development isn’t useful, it certainly is as a learning tool. But we still have to decide the most important architectural question of where we value humans in the decision making process. If you’re happy handing over decisions to the machine then fine but you should do it being aware of the tradeoffs and the loss of comprehension. 
+
+But does losing control of system comprehension actually matter that much? It’s fine if you’re talking about prototypes, but if you’re going into production without that understanding, then you will increasingly be running the risk of becoming the next Knight Capital Group, a company that lost $440 million in 45 minutes because of behaviour within its systems that it did not understand. It’s only a matter of time before history repeats itself. 
+
+That’s not to say that human understanding is perfect; it’s not, as the Knight Capital example shows. It’s actually an argument for why good engineering practices matter. By choosing a path of devaluing human judgement in the decision making process, then you are accepting the structural choices and values the LLM uses as long as functionality seems correct. In doing so, you are ignoring that functionality is only one subset of what goes into building a system. Comprehension is your last line of defence in a world where we have not yet developed the engineering practices to manage this safely. 
+
+So let us now stretch the specification driven development to its next logical step. If we accept it as some higher level language (it is not) then why not get another agent to write the specification for you based upon some desired wish. Before some marketing person beats us to the punch, we will call this Wish Driven Development and quickly get an LLM to write us a book on this. We could even imagine prompting for “Build a successful product. Create a company around it. Reach an exit and deposit the amount in my crypto wallet”. Fame and fortune awaits! 
+
+Yes, you can even tell yourself that you’ll definitely read the specification this time before handing it to another swarm of agents to build it. You can snuggle under the comfort blanket that you have another swarm to check if the output matches the specification, another to build tests for it, to check if it is secure and so on. You can remove yourself far from the decision making processes and accept a world of convenience in return for no understanding. However, this is basically the storyline for E.M. Forster’s “The Machine Stops”, so he beat us to the punch by over one hundred years. Damn. 
+
+But hold on … why stop there, why not get the agents to create the desired wish? Do we really need humans to tell us what they want? The answers to all these questions is determined by where you think that humans should be involved in the decision making process and the nature of that involvement. 
+
+We’re not writing this to discourage people from using LLMs, quite the opposite. But we want you to think deeply about where you place human judgement in the decision making processes that are digital systems. Comprehension is not a nice to have. It is the scaffolding that makes safety, accountability, and learning possible. Without it, you are not engineering; you are relying on belief. By removing the conditions for comprehension under which mistakes can be understood, corrected, and learned from, you make the collapse that E.M.Forster discussed inevitable given enough time. In practice, we both suspect that it’ll take many Knight Capitals before we learn this lesson again, such is the seduction of LLMs. 
+
+To inform where human decision making matters, it is useful to know what humans can do through better engineering practices. Armed with that knowledge, we can then map the entire system and determine, for example, where do we wish to allow vibe coding for the creation of prototypes, where do we wish to use a combination of AI + Software Engineering (assuming we can make development an engineering subject) and where should we outsource to more utility providers. Remember, we are still learning the practices of how to do this safely but we should at least start by asking questions. 
+
+An example of this can be seen in figure 58. In this figure, we have taken a much earlier map used by James Findlay in the building of HS2 (UK high speed rail) in a virtual world. The original map was created in the early 2010s and was used to identify which system components should be built in a more agile way, which components should be bought off the shelf and which should be outsourced.
+
+Today, on the same system map, we can ask a similar question on where human decision making matters. The answer is not a "one size fits all" but instead a combination. We might decide to vibe code those novel and new prototypes but simultaneously decide to use software engineering assisted by AI in building the core of the system. Where those boundaries exist will vary depending upon the capability of the technology, our willingness for risk and our requirements such as accuracy and reliability. The map is simply a communication tool for expressing this.
+
+.Architectural choices on where to involve human decision making in an entire system
+[#img-fig58-human-decision-making]
+[caption="Figure 58: "]
+image::6-58_OK8tMVK9aMHJ4RGmu4wnQA.png[Architectural choices on where to involve human decision making in an entire system,width=100%,align=center]
+
+Architecture is supposed to be the expression of our values and it is unfortunate that most architects never ask, let alone answer, the most important architectural questions of the day. There are a number of key roles that architects can and should be playing:
+
+. Deciding where we value humans in the decision making process.
+. Determining the questions that need to be asked.
+. Understanding the existing system.
+. Being the arbiter of conflict between different decision makers.
+
+== Myth 6: Dealing with legacy is hard
+
+To explain this myth, let us start with a real company. Lifeware offers software as a service systems that manage the core data and automate the core workflows for insurance companies. The first step when Lifeware works with a new insurance company is to migrate their legacy system to the Lifeware infrastructure. To do this, they use a streamlined process that has provided a 100% success rate for the migration of over 20 insurance companies over the last two decades. Furthermore, once migrated, Lifeware evolves these systems faster and with a fraction of effort compared to the teams that worked on the systems they displaced. 
+
+Contrast these results with the typical industry reality. For example, according to the Advanced 2020 Mainframe Modernization Business Barometer, 74% of organizations have failed to complete their migration projects. That gives an industry typical of 26% success rate. Lifeware is an extraordinary outlier with a 100% success rate over 20 examples. On probability alone, the likelihood of Lifeware’s success being a random effect is about 1 in 500 billion. So, either Lifeware is extraordinarily lucky or they are doing something right. 
+
+They achieve this exceptional success because they have invested in software engineering as a business capability for three decades. They spot and adopt new fundamental engineering practices early. So much so that they were a flagship case study in the book which first introduced the ideas of test driven development. Lifeware had the largest test suite in the world at the time (4K tests in 2002). Currently, their test suite holds 160K tests for a system built with 35M lines of code. While the amount of tests grew non linearly over the past decades, the amount of time to run them is still measured in minutes. Today, every developer can transparently and directly run them on AWS clusters containing thousands of processors. 
+
+They achieved this feat over time by investing considerably in their development environment. They have created a variety of specific tools, including for technical reporting of migrations status, for overviewing their integration pipeline or for contextual debugging. More recently, they took a further step and adopted Moldable Development which includes the practice of building small contextual tools. They have already accumulated more than 3k contextual micro tools to guide their workflows, with over 1k being constructed only over the past four months. These tools complement their functional tests and accelerate their work. As a result, Lifeware can already attack larger migrations than before which directly and positively affects their business. 
+
+What is more difficult to explain is the level of integration that they achieved throughout the company: whether they investigate a system change together with the business, whether they script a custom code transformation, or whether they investigate the performance of an AWS cluster run, they never leave their environment. Rather than splitting their work across tool boundaries, they make tools come to their environment. The result is a truly integrated development experience consisting of thousands of contextual tools. 
+
+So, it seems that dealing with legacy is only hard when you don’t invest in engineering practices. There is no obvious reason why other companies can’t be sharing the same rates of success. 
+
+This focus on engineering is somewhat counter to today’s AI mantra, which gives us an interesting experiment. If investment in engineering practices and system comprehension are the primary drivers of success, then you would expect that investment and use of AI in development without a focus on engineering practices would lead to anomalies such as people believing that performance has improved whilst instability in delivery has increased. 
+
+This is what the DORA 2025 State of AI-assisted Software Development Report seems to have stumbled upon (pages 38, 41): high degrees of adoption and perception that performance had improved combined with increasing instability in delivery. Of course, perception is hardly a good yardstick for measurement. 
+
+Fortunately, we have a randomized controlled trial from METR that looked at how AI tools affected the productivity of experienced open source developers. What they found was that while developers expected and perceived an increased productivity, the use of such tools actually slowed development by 19%. 
+
+So, we seem to be on a sticky wicket with high adoption, perceptions of improvement and associated marketing claims against quantitative slowdown and increasing instability. How this gets resolved in the future is unclear as the practices needed for development with AI are still slowly emerging and will take many more years to mature. All we can say for now is that a focus on engineering practice is the better bet since engineering isn’t going away anytime soon.
+
+== Myth 7: Non-technical people can’t understand code
+
+In the early 1970s, computers started to offer interfaces made of screens and keyboards. Whilst this was a considerable improvement on what existed before (printouts, punchcards, pluggable cables), there was no graphical interface, only text based screens and command line instructions. Such limited interaction abilities meant that the audience became those educated on the corpus of these instructions i.e. “technical” people. 
+
+At the same time, a different paradigm appeared at Xerox Parc known as the Smalltalk system with a bitmapped display, radical graphical interface including icons & menus, application windows, keyboard and mouse. In this world, even children could understand and manipulate the system. 
+
+From technical experts in one world to children in another. Both were using similar underlying “computers”. Why such a huge difference? 
+
+It is the interface that determines the cognitive and practical barrier to entry, which in turn determines who can realistically use, manipulate and understand the system. In essence, an interface is a translation of a computation in a way that a human can understand and interact with. Interfaces are fundamental because we cannot perceive anything inside the computer that is not tied to an interface. In short, if you change the interface, you change the _audience._ 
+
+When we say “only technical people can truly understand how the code works”, what we are really admitting is that the interface limits the audience to technical people. It’s a design choice, not a law of nature. Whilst you can enable a wider audience to use and understand a system through interface design choices, a deeper understanding still requires that audience to understand its construction which is often equated with the ability to read the code. 
+
+However, in Cozy Corner from the previous chapter, we’ve seen an example of how presenting the inner workings of a system could empower non-technical people to understand and have a say in its evolution. Any part of a system can be presented through a tool in a way that an audience can comprehend without reading code. In fact, even technical people should not resort to reading code as the primary means to understand the system’s inner workings. 
+
+Understanding a system through a tool only requires the tool user to appreciate what it does and not necessarily its construction. A surveyor can use a theodolite to reason about a landscape without awareness of the intricacies of theodolite construction, such as the use of bronze bearings to create carefully controlled friction. That said, there are certainly advantages with understanding the construction, and that pathway should never be closed. 
+
+However, there is an assumption that a deeper understanding of the output of a tool requires a deeper understanding of the tool itself and this requires a technical person. Fortunately, this deeper understanding can be provided by another tool. Hence, the technical person might be the pathfinder but that doesn’t mean the non-technical person can’t follow. This is best shown with an example. 
+
+In a previous chapter, we used a treemap visualization showing the classes from Glamorous Toolkit grouped by packages. The visualization (repeated below) highlights in blue the classes that have at least one associated contextual tool.
+
+.Treemap visualizing the parts of Glamorous Toolkit that have at least one associated contextual tool
+[#img-fig59-treemap-gt]
+[caption="Figure 59: "]
+image::6-59_DQOqfD7dgwC2TZd1u7MJtw.png[Treemap visualizing the parts of Glamorous Toolkit that have at least one associated contextual tool,width=100%,align=center]
+
+This visualization is a tool inside Glamorous Toolkit (GT) whose subject is GT itself. This is a tool within a tool. This idea can be taken even further and can be applied at any granularity level. Whilst the tool was built by a technical user, a non-technical user is perfectly able to use the tool to gain a deeper understanding of GT than most technical users have of their own traditional development environments. 
+
+So, what if we want to know an even more technical aspect? For example, how does the layout work? That sounds like something only a specialized technical person could understand. So, let us give that a go with the aid of a tool. 
+
+To do that, let us consider a bit of history. The layout's implementation is based on an algorithm called the Squarified Treemap. The article that introduced it contains the pseudocode and the math to describe what has to be implemented. More interestingly, though, it also includes a visual depiction of the steps the algorithm takes as seen below.
+
+.A diagramatic description of a squarified treemap algorithm, taken from Squarified Treemaps, Bruls et al, 2000
+[#img-fig60-treemap-algorithm]
+[caption="Figure 60: "]
+image::6-60_qw9iwMNWVhGMRta42KFpVQ.png[A diagramatic description of a squarified treemap algorithm, taken from Squarified Treemaps, Bruls et al, 2000,width=100%,align=center]
+
+The picture shows multiple steps of laying out a set of 7 nodes with different areas. The sizes are denoted by numbers inside the boxes (6,6,4,3,2,2,1). The challenge the algorithm addresses is to arrange these so that we get a nice proportion between the overall width and height. 
+
+In the first step, it arranges a node with the largest area, which is 6. Then another, which is also 6. And then the third one with an area of 4. Only at this step, a condition about the proportions of the width and the height is not met, so the third step is discarded, the algorithm moves back one step and tries a different path. In this path, the node with weight 4 is placed to the right. And so the algorithm continues, hitting constraints, falling back to previous steps and trying again until all nodes are filled in. A non-technical person can easily understand what the algorithm is doing in this visual representation but may struggle to understand the code itself which is over 760 lines long. The visual depiction allows us to form an intuitive mental model of how the placement of elements work. 
+
+It was this same picture that guided the implementation of the algorithm into Glamorous Toolkit (GT). And once the implementation existed, it also included the tool to produce the same visualization for any given treemap. The picture below depicts this. On the left we see a concrete treemap of seven nodes like in the paper (just less dense than the one used to visualize the components in GT) and on the right we have the steps that the algorithm followed to produce the treemap provide by the same tool that was used in its implementation.
+
+.Two views of the treemap algorithm: one showing the result, one showing the steps to obtain the result
+[#img-fig61-treemap-views]
+[caption="Figure 61: "]
+image::6-61_Zkf4iXEmfYG-jJ-mgelNmA.png[Two views of the treemap algorithm: one showing the result, one showing the steps to obtain the result,width=100%,align=center]
+
+One minor detail to note is that by making the programmatic visualization available, we quickly discovered that for these specific 7 nodes and areas, the algorithm took 11 steps. However, the manual visualization in the original paper uses only 10 steps. This prompted a review of our interpretation of their algorithm (the right hand side of the image) even though the overall functionality (the left hand side) was equivalent. The person who used the visualization to challenge the interpretation of the algorithm was not the developer who had implemented it. Even non technical people can participate in highly technical conversations with the right interfaces. For those who are curious, what was discovered was the manual visualization contains a flaw. 
+
+Currently, GT contains over 5,000 such tools doing a similar job and making seemingly complicated technical details accessible to various audiences. Contrary to popular belief, any aspect of a software system can be explained in a way that’s understandable to an audience that is interested to learn about it. 
+
+One final thing to note, it is the artificial barrier created between technical and non-technical people that has led us to create misleading terms in an attempt to find common ground. One of our favourite, and probably the most misleading is technical debt.
+
+== Myth 8: Technical debt exists
+
+Technical debt is an overloaded term today. It is used as a placeholder for all sorts of conversations, especially at the boundaries between technical and business areas. We should break free of it. 
+
+When Ward Cunningham came up with the term in 1992, it was a beautiful metaphor. At that time, the business people and technologists were often communicating through large documents. With just two words “technical” and “debt”, Ward brought together two worlds that were foreign to each other and gave them a common language to describe a specific problem in a financial system. He wanted to say that the structure of the system no longer fitted the new understanding that they gained by building and running it, and therefore they should stop and restructure it to mirror this. Like paying out a debt. 
+
+Due to the communication void caused by the chasm between the technical and non-technical world, this metaphor acted like a spark that ignited new kinds of conversations. And like that, the metaphor of technical debt took on a life of its own with many meanings being conflated into it. Ward later clarified that he never intended it to mean anything else than the difference between the current structure of the system, and the structure that we now wish the system to be. He never intended it to mean a reckless pile up of technology, for example. 
+
+A metaphor can be useful but this one has run its course. It’s time to outgrow it. 
+
+Ward Cunningham took a complex, multi-dimensional problem and reduced it to a single scalar that business could grasp. That scalar did not need to be accurate; it only needed to improve the business’s understanding of the system. The problem is that systems are influenced along multiple dimensions including code, context, skills, and tools. 
+
+The code represents what the system does (function) and how it does it (structure). But that code exists within an environment, and is shaped by the skills and tools used to build, operate, and understand it. What we are really dealing with is a tensor of function, structure, context, skills, and tools, compressed into a single scalar called “technical debt”, a value that people then attempt to measure by examining structure alone. 
+
+Whilst function, structure, context, skills and tools are real and tangible, the scalar is imaginary. Its role was simply to help provide the business with “insight” because “non-technical people can’t understand code” (see myth 7). This scalar is however as damaging to understanding as that other horrendously simplified scalar known as GDP is. In that case, Simon Kuznets (the inventor of GDP), warned from the very beginning that it should not be used as a measure of national success or wellbeing which is of course what it has been used for. People like simple scalars, like KPIs regardless of whether they are useful or downright harmful. They have the one property that manager’s like … they are simple, because we are busy people. 
+
+However, the scalar being a compression of these multiple facets has one uncomfortable property. Its “value” can change by simply changing one or more of the facets i.e. if I change the tools or change the context then I could potentially make a huge debt disappear as if by magic. It’s not however magic, it’s just that the scalar is not real, it’s imaginary, a compression of things that are real. 
+
+Consider the following thought experiment: If we could change the tools and skills so that we could understand and change our systems at will and at zero cost, would we still talk about technical debt? We think not. A couple of decades ago, changing the name of a function was a tedious action potentially involving breaking code and requiring manual changes in multiple places; today, the same action can be handled through an automatic refactoring at zero cost. Without such refactorings, having a function with the wrong name could be qualified and even quantified as technical debt. But with refactorings, qualifying the same situation as technical debt would be misleading at best. 
+
+A simple change of tools and skills has made the technical debt disappear. It’s the sort of financial engineering that accountants could only dream of, alas in their world debt is something very real. 
+
+You might say that this only works in narrow cases. But the bottom line is that we will only find these other cases if we accept that the possibility exists, so that’s where we should start from. The good news is that we do not have to talk in hypotheticals. Throughout this book we show multiple examples of how something that appears expensive becomes many times less by changing the skills and tools. 
+
+Legacy IT estates are commonly considered to be part of an organization’s “technical debt”, but in myth 6 you saw a case in which a large legacy system can be moved much faster than the competition. This shows that investing in engineering practices makes the technical debt disappear and can even turn it into a competitive advantage. 
+
+Along with being an imaginary compression, it also suffers from being framed as a negative metaphor. The best case scenario is to not have debt. Having this monopolize the conversation drives a behaviour of always trying to reduce whatever is associated with that number, including the idea of software engineering as a cost structure, or of outsourcing it to other companies. That might be the right approach but as we saw with the legacy example, so might investing in engineering practices. 
+
+Another side effect is joy. When systems become understandable and changeable, engineering becomes joyful. So, not only do you get to solve your most expensive problem, you get to make it fun in the process, too. Isn’t that worth breaking free of a 30-year old metaphor that is imaginary?
+
+== What did we learn?
+
+Before we move on, let us pause to look on the mighty works of our industry’s myths, and despair. 
+
+“Software engineering is about building functionality” crumbled first because software engineering is not only about functionality but also structure. This then exposed the myth of “Refactoring is not a business problem” because the organization’s knowledge is encoded in that structure. At this point, the tower of “Software engineering is an engineering practice” leans over and collapses because it was stretching the truth to breaking point. Testing has evolved into an engineering discipline by building contextual tools at scale. Development should follow the same path. 
+
+Recently, we have been deafened by a thousand AI purists chanting that “LLMs will replace software engineers”, but LLMs do not remove the need for engineers, they amplify the value of the engineering path that creates better questions, better tools, and better feedback. This matters because system decisions are made in code and not in the specifications, diagrams or other faith based artefacts that made people worship at the altar of “architects make decisions”. This doesn’t mean that architects don’t matter. They do because they should be deciding where we value humans in the decision making process. 
+
+By focusing on these engineering practices we can finally solve “the legacy is hard” trap which is even more pernicious than the idea that “non-technical people cannot understand code”. We finish our journey through the lands of Ozymandius with a search for mythical beasts. Yes, we too have heard (and even used the idea) that “technical debt exists”, alas, whilst well meant it’s mostly imaginary and misleading. 
+
+In overcoming all these myths, LLMs can be an enabler, for example in the building of micro-tools, but they also pose an ever present danger by removing the conditions for comprehension. 
+
+Before we leave, it’s worth noting that there are many more myths we could have explored. This is not an exhaustive list and we both had to make compromises. Simon, for example, would happily spend several chapters on how LLMs are non kinetic forms of warfare and why most of today’s digital sovereignty discussion (with its focus on territorial location) misses the mark by a mile. Tudor would have expanded on how the inability to read systems leads to a world of functional illiteracy that provides fertile ground for myths to flourish. However, for brevity, we made those compromises and chose only eight. We then traced their existence to our missing two wolves.
+
+== Homework
+
+As a team, pick a legacy system that is often described as “technical debt”.
+
+. Determine what business value would be enabled if you could change it at will?
+. Pick three manual diagrams about that system. Do you believe these represent the system?
+. Write down the words: context, skills, tools. What change in each would diminish the apparent technical debt?
+. [For technical users] : Redo the experiment from myth 4. If you are happy sharing the information, use Claude Code (or an LLM/Agent of your choosing) to create a visualization of the module dependencies (such as npm). By changing only the beginning of the prompt you created, ask the LLM to create a tool to generate the visualization. Compare the two visualizations.
+. Write one sentence on where you want human judgement to remain non-negotiable in that system (and why).
+
