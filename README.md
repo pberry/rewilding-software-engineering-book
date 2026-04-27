@@ -9,7 +9,7 @@ All these generators require you to have installed [asciidoctor](https://asciido
 ## HTML 
 To generate the HTML version of this book, run the following command in the base directory of this repository:
 
-    asciidoctor wardley-maps-book.adoc
+    asciidoctor rewilding-software-book.adoc
 
 ## PDF
 To generate the PDF version of this book, you additionally need to install [asciidoctor-pdf](https://asciidoctor.cn/docs/convert-asciidoc-to-pdf/) with the following command:
@@ -18,7 +18,7 @@ To generate the PDF version of this book, you additionally need to install [asci
 
 Then you can run the following command in the base directory of this repository:
 
-    asciidoctor-pdf wardley-maps-book.adoc
+    asciidoctor-pdf rewilding-software-book.adoc
 
 # Contributing
 Contributions are cool, and also very welcome.  There is a [contribution guide](CONTRIBUTING.md) which you can familiarise yourself with if you want to get involved (even if its just fixing a typo).  They should be _very_ unsurprising to anyone used to the OSS world.
