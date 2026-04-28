@@ -22,7 +22,7 @@ These steps are shown in figure 1. +
 .The steps for decision making
 [#img-fig1-steps-for-decision-making] 
 [caption="Figure 1: "] 
-image::2-2_0uvLuosVShCt_qKb.png[Figure 1: the steps for decision making.,700,494,align=center]
+image::2-1_dhKbp3_vE2OcMSSk.png[Figure 1: the steps for decision making.,700,494,align=center]
 
 The steps have been drawn in a https://medium.com/wardleymaps[Wardley Map]. These maps provide a visualization of the problem space and are based upon a systematic notation (they also make Simon happy). We use a map because trying to explain the characteristics and consequences of decision making in software is an incredibly hard thing to do. We know this because we have tried to communicate these ideas both conceptually and through technology for 15 years and those explainations always fell short. The problem is the limitation of narrative. Maps allow us to present complicated and multi-dimensional information in a succint form. +
 
