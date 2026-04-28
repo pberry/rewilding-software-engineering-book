@@ -52,7 +52,7 @@ These conversations are part of how we explore the system. In software explorati
 
 Without reliable system visualizations, any exploration that depends on manual diagrams might only be partial and can hold hidden beliefs. This leads to assessments that are predominately based upon whether we believe what we are being told by the views created and hence our *gut feel*. +
 
-In summary, the current practice can be described as gut feel assessmentbased upon ad-hoc exploration using what are perceived to be “data-centric” conversations built upon manual information that is synthesized through a process of manual inspection using a development experience that consists of monolithic tools. We’ve enhanced our Wardley map to reflect this current practice in figure 2. +
+In summary, the current practice can be described as gut feel assessment based upon ad-hoc exploration using what are perceived to be “data-centric” conversations built upon manual information that is synthesized through a process of manual inspection using a development experience that consists of monolithic tools. We’ve enhanced our Wardley map to reflect this current practice in figure 2. +
 
 .the common steps for decision making in software engineering today.
 [#img-fig2-common-steps]
