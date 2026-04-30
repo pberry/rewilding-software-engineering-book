@@ -14,15 +14,15 @@ In general, the rational way to make engineering decisions can be described thro
 . To assess the problem, we need to *explore* the systems we are looking at.
 . To explore the system, we need to have a *conversation* with either a person or the system.
 . Having a conversation requires *information* that we can share or can be shared with us.
-. Information does not just appear but it must be *synthesized *in some way.
-. To synthesize information, we need some form of *development experience*to interact with the systems.
+. Information does not just appear but it must be *synthesized* in some way.
+. To synthesize information, we need some form of *development experience* to interact with the systems.
 
 These steps are shown in figure 1. +
 
 .The steps for decision making
 [#img-fig1-steps-for-decision-making] 
 [caption="Figure 1: "] 
-image::2-2_0uvLuosVShCt_qKb.png[Figure 1: the steps for decision making.,700,494,align=center]
+image::2-1_dhKbp3_vE2OcMSSk.png[Figure 1: the steps for decision making.,700,494,align=center]
 
 The steps have been drawn in a https://medium.com/wardleymaps[Wardley Map]. These maps provide a visualization of the problem space and are based upon a systematic notation (they also make Simon happy). We use a map because trying to explain the characteristics and consequences of decision making in software is an incredibly hard thing to do. We know this because we have tried to communicate these ideas both conceptually and through technology for 15 years and those explainations always fell short. The problem is the limitation of narrative. Maps allow us to present complicated and multi-dimensional information in a succint form. +
 
@@ -34,7 +34,7 @@ The blue labels of genesis, custom built, product and commodity describe how ind
 
 Many of the ideas in this book can feel as abstract in description as they are powerful in practice. Hence, to help the reader overcome this, we explain each of these steps using examples from our experience, in a question and answer format. Let us start with the question of “How do we go about making decisions in practice today?”. To answer this, we start at the bottom of the map (figure 1) and work up. +
 
-We can only experience a system through tools that expose that system through some form of development experience. Current practice is to use *monolithic *tools that are designed for general use without catering for specific contextual needs. Hence, the software tools we use to investigate a hospital system are usually the same tools that we use to investigate an online gambling site. In the physical world, this is the equivalent of trying to build a formula 1 racing car with the same set of tools used for digging a deep shaft mine. +
+We can only experience a system through tools that expose that system through some form of development experience. Current practice is to use *monolithic* tools that are designed for general use without catering for specific contextual needs. Hence, the software tools we use to investigate a hospital system are usually the same tools that we use to investigate an online gambling site. In the physical world, this is the equivalent of trying to build a formula 1 racing car with the same set of tools used for digging a deep shaft mine. +
 
 These standard software tools are so pervasive that you can probably describe them without even looking. They will have a navigation pane on the left, a basic search function on top and some general window which displays information such as the code of the item you’ve selected in the navigation pane. You might even be able to right click on an item in the navigation pane to get some properties. Even so, how you view and interact with the “data” of the system has been pre-defined, i.e. the tool constrains how you view the digital world. +
 
@@ -52,7 +52,7 @@ These conversations are part of how we explore the system. In software explorati
 
 Without reliable system visualizations, any exploration that depends on manual diagrams might only be partial and can hold hidden beliefs. This leads to assessments that are predominately based upon whether we believe what we are being told by the views created and hence our *gut feel*. +
 
-In summary, the current practice can be described as gut feel assessmentbased upon ad-hoc exploration using what are perceived to be “data-centric” conversations built upon manual information that is synthesized through a process of manual inspection using a development experience that consists of monolithic tools. We’ve enhanced our Wardley map to reflect this current practice in figure 2. +
+In summary, the current practice can be described as gut feel assessment based upon ad-hoc exploration using what are perceived to be “data-centric” conversations built upon manual information that is synthesized through a process of manual inspection using a development experience that consists of monolithic tools. We’ve enhanced our Wardley map to reflect this current practice in figure 2. +
 
 .the common steps for decision making in software engineering today.
 [#img-fig2-common-steps]
