@@ -202,3 +202,4 @@ Gather a group of your software engineering colleagues and discuss the following
 . When was the last time we talked about how we read code? Specifically, about how we do the reading, not about the code we read.
 . Do we have models of our system that allow us to investigate performance issues programmatically? What about security concerns? Or business domain events?
 . How do we obtain our architecture diagrams? Are they manually created, or do we generate them out of the system’s sources? How confident are we that the diagrams we use represent the system accurately? How would we verify this?
+
